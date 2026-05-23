@@ -38,7 +38,6 @@ public class JobServiceImpl implements JobService{
 //                .toList();
     }
 
-
     //delete job by id
     @Override
     public Boolean deleteJobById(Long id) {
@@ -54,6 +53,7 @@ public class JobServiceImpl implements JobService{
        return false;
     }
 
+    //update job
     @Override
     public Boolean updateJobById(Job job, Long id) {
        Iterator<Job>jobListData=jobList.iterator();
