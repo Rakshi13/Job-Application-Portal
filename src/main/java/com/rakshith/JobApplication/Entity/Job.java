@@ -1,12 +1,26 @@
-package com.rakshith.JobApplication.Repository;
+package com.rakshith.JobApplication.Entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Job {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
     private Long maxSalary;
     private Long minSalary;
     private String location;
+
+    //default constructor
+    public Job(){
+
+    }
 
     public Job(Long id, String title, String description, Long maxSalary, Long minSalary, String location) {
         this.id = id;

@@ -1,6 +1,6 @@
 package com.rakshith.JobApplication.Controller;
 
-import com.rakshith.JobApplication.Repository.Job;
+import com.rakshith.JobApplication.Entity.Job;
 import com.rakshith.JobApplication.Service.JobService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
