@@ -5,6 +5,7 @@ import com.rakshith.JobApplication.Repository.Job;
 import java.util.List;
 
 public interface JobService {
+
      //Get All Jobs
      List<Job> findAll();
 
