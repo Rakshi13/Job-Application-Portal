@@ -1,76 +1,63 @@
 package com.rakshith.JobApplication.Service;
 
-import com.rakshith.JobApplication.Repository.Job;
+import com.rakshith.JobApplication.Entity.Job;
+import com.rakshith.JobApplication.Repository.JobRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class JobServiceImpl implements JobService{
-    private List<Job>jobList=new ArrayList<>();
-    private Long nextId=1L;
+    JobRepository jobRepository;
+
+    public JobServiceImpl(JobRepository jobRepository) {
+        this.jobRepository = jobRepository;
+    }
 
     //Search All Job
     @Override
     public List<Job> findAll() {
-        return jobList;
+        return jobRepository.findAll();
     }
 
     //create Job
     @Override
     public void createJob(Job job) {
-        job.setId(nextId++);
-        jobList.add(job);
+        jobRepository.save(job);
     }
 
     //find Job By Id
     @Override
     public Job findByID(Long id){
-        for(Job job:jobList){
-            if(job.getId().equals(id)){
-                return job;
-            }
-        }
-        return null;
-//        return jobList.stream()
-//                .filter(f->f.getId()==id)
-//                .limit(1)
-//                .toList();
+        return jobRepository.findById(id).orElse(null);
     }
 
     //delete job by id
     @Override
     public Boolean deleteJobById(Long id) {
-        Iterator<Job> itr=jobList.iterator();
-
-        while(itr.hasNext()){
-            if(itr.next().getId().equals(id)){
-                itr.remove();
-                return true;
-            }
-        }
-
+       if(jobRepository.existsById(id)){
+           jobRepository.deleteById(id);
+           return true;
+       }
        return false;
     }
 
     //update job
     @Override
     public Boolean updateJobById(Job job, Long id) {
-       Iterator<Job>jobListData=jobList.iterator();
 
-       while(jobListData.hasNext()){
-           Job data=jobListData.next();
+        Optional<Job>optionalJob=jobRepository.findById(id);
 
-           if(data.getId().equals(id)){
-               data.setDescription(job.getDescription());
-               data.setLocation(job.getLocation());
-               data.setTitle(job.getTitle());
-               data.setMinSalary(job.getMinSalary());
-               data.setMaxSalary(job.getMaxSalary());
-
-               return true;
-           }
-       }
-       return false;
+        if(optionalJob.isPresent()){
+            Job jobData=optionalJob.get();
+            jobData.setLocation(job.getLocation());
+            jobData.setDescription(job.getDescription());
+            jobData.setTitle(job.getTitle());
+            jobData.setMinSalary(job.getMinSalary());
+            jobData.setMaxSalary(job.getMaxSalary());
+            jobRepository.save(jobData);
+            return true;
+        }
+        return false;
     }
 }

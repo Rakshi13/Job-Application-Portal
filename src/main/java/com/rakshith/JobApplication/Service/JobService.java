@@ -1,6 +1,6 @@
 package com.rakshith.JobApplication.Service;
 
-import com.rakshith.JobApplication.Repository.Job;
+import com.rakshith.JobApplication.Entity.Job;
 
 import java.util.List;
 
