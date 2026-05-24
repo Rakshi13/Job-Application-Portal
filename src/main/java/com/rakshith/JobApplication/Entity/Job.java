@@ -1,9 +1,6 @@
 package com.rakshith.JobApplication.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Job {
@@ -17,18 +14,30 @@ public class Job {
     private Long minSalary;
     private String location;
 
+    @ManyToOne
+    private Company company;
+
     //default constructor
     public Job(){
 
     }
 
-    public Job(Long id, String title, String description, Long maxSalary, Long minSalary, String location) {
+    public Job(Long id, String location, Long minSalary, Long maxSalary, String title, String description,Company company) {
         this.id = id;
+        this.location = location;
+        this.minSalary = minSalary;
+        this.maxSalary = maxSalary;
         this.title = title;
         this.description = description;
-        this.maxSalary = maxSalary;
-        this.minSalary = minSalary;
-        this.location = location;
+        this.company = company;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public Long getId() {
