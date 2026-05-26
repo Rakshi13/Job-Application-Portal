@@ -57,9 +57,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Get Company Specific Review
     @Override
-    public Review getCompanySpecificReview(Long id) {
-        return reviewRepository.findById(id).orElse(null);
-
+    public Review getCompanySpecificReview(Long reviewId,Long companyId) {
+        List<Review>reviews=reviewRepository.findByCompanyId(companyId);
+        return reviews.stream()
+                .filter(review -> review.getId().equals(reviewId))
+                .findFirst()
+                .orElse(null);
     }
 
     //Delete Review
