@@ -48,13 +48,9 @@ public class ReviewController {
 
 
     //Get Review By ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable Long id){
-        Review review=reviewService.getCompanySpecificReview(id);
-        if(review!=null){
-            return new ResponseEntity<>(review,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(review,HttpStatus.NOT_FOUND);
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<Review> getReviewById(@PathVariable Long reviewId,@PathVariable Long companyId){
+        return new ResponseEntity<>(reviewService.getCompanySpecificReview(reviewId,companyId),HttpStatus.OK);
     }
 
     //Delete By ID
