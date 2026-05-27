@@ -37,9 +37,9 @@ public class ReviewController {
     }
 
     //update Review
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateReview(@RequestBody Review review,@PathVariable Long id){
-        Boolean reviewFound=reviewService.updateCompanyReview(review,id);
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<String> updateReview(@RequestBody Review review,@PathVariable Long reviewId, @PathVariable Long companyId){
+        Boolean reviewFound=reviewService.updateCompanyReview(review,reviewId,companyId);
         if(reviewFound){
             return new ResponseEntity<>("Review Updated Successfully",HttpStatus.OK);
         }
@@ -54,9 +54,9 @@ public class ReviewController {
     }
 
     //Delete By ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable Long id){
-        Boolean reviewFound=reviewService.deleteReviewById(id);
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<String> deleteReview(@PathVariable Long reviewId,@PathVariable Long companyId){
+        Boolean reviewFound=reviewService.deleteReviewById(reviewId,companyId);
         if(reviewFound){
             return new ResponseEntity<>("Review Deleted Successfully.",HttpStatus.OK);
         }

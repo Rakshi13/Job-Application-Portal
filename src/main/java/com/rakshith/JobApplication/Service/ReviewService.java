@@ -13,11 +13,11 @@ public interface ReviewService {
     List<Review> getAllCompanyReview(Long companyId);
 
     //UPDATE REVIEW
-    Boolean updateCompanyReview(Review review,Long id);
+    Boolean updateCompanyReview(Review review,Long reviewId,Long companyId);
 
     //GET COMPANY SPECIFIC REVIEW
     Review getCompanySpecificReview(Long reviewId,Long companyId);
 
     //DELETE REVIEW BY ID
-    Boolean deleteReviewById(Long id);
+    Boolean deleteReviewById(Long reviewId,Long companyId);
 }
