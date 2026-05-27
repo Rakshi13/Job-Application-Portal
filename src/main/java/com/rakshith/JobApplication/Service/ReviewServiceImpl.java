@@ -15,16 +15,16 @@ public class ReviewServiceImpl implements ReviewService {
     private ReviewRepository reviewRepository;
     private CompanyService companyService;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository,CompanyService companyService) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, CompanyService companyService) {
         this.reviewRepository = reviewRepository;
-        this.companyService=companyService;
+        this.companyService = companyService;
     }
 
     //add Review
     @Override
-    public Boolean addCompanyReview(Review review,Long companyId) {
-        Company company=companyService.fetchCompanyById(companyId);
-        if(company!=null){
+    public Boolean addCompanyReview(Review review, Long companyId) {
+        Company company = companyService.fetchCompanyById(companyId);
+        if (company != null) {
             review.setCompany(company);
             reviewRepository.save(review);
             return true;
@@ -40,25 +40,26 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Update Review
     @Override
-    public Boolean updateCompanyReview(Review review, Long id) {
-        Optional<Review>reviewData=reviewRepository.findById(id);
+    public Boolean updateCompanyReview(Review updatedReview, Long reviewId, Long companyId) {
+        List<Review> reviews = reviewRepository.findByCompanyId(companyId);
 
-        if(reviewData.isPresent()){
-            Review review1=reviewData.get();
-            review1.setTitle(review.getTitle());
-            review1.setDescription(review.getDescription());
-            review1.setRating(review.getRating());
-            reviewRepository.save(review1);
-            return true;
+        for (Review review1 : reviews) {
+            if (review1.getId().equals(reviewId)) {
+                review1.setCompany(updatedReview.getCompany());
+                review1.setTitle(updatedReview.getTitle());
+                review1.setRating(updatedReview.getRating());
+                review1.setDescription(updatedReview.getDescription());
+                reviewRepository.save(review1);
+                return true;
+            }
         }
-
         return false;
     }
 
     //Get Company Specific Review
     @Override
-    public Review getCompanySpecificReview(Long reviewId,Long companyId) {
-        List<Review>reviews=reviewRepository.findByCompanyId(companyId);
+    public Review getCompanySpecificReview(Long reviewId, Long companyId) {
+        List<Review> reviews = reviewRepository.findByCompanyId(companyId);
         return reviews.stream()
                 .filter(review -> review.getId().equals(reviewId))
                 .findFirst()
@@ -67,12 +68,18 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Delete Review
     @Override
-    public Boolean deleteReviewById(Long id) {
-        if(reviewRepository.existsById(id)){
-            reviewRepository.deleteById(id);
+    public Boolean deleteReviewById(Long reviewId, Long companyId) {
+
+        if (reviewRepository.findByCompanyId(companyId) != null && reviewRepository.existsById(reviewId)) {
+            Review review=reviewRepository.findById(reviewId).orElse(null);
+            Company company=review.getCompany();
+            //we need to remove the company review as well. since it is a bidirectional mapping.
+            company.getReviews().remove(review);
+            review.setCompany(null);
+            companyService.modifyCompanyById(companyId,company);
+            reviewRepository.deleteById(reviewId);
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 }
