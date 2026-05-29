@@ -2,6 +2,7 @@ package com.rakshith.JobApplication.Entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
 public class Job {
 

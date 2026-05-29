@@ -1,8 +1,12 @@
 package com.rakshith.JobApplication.DTO;
 
 
+import lombok.Data;
+
 import java.util.Objects;
 
+
+@Data
 public class JobRequest {
     private String title;
     private String description;
