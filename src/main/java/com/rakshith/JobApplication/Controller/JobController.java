@@ -1,5 +1,7 @@
 package com.rakshith.JobApplication.Controller;
 
+import com.rakshith.JobApplication.DTO.JobRequest;
+import com.rakshith.JobApplication.DTO.JobResponse;
 import com.rakshith.JobApplication.Entity.Job;
 import com.rakshith.JobApplication.Service.JobService;
 import org.springframework.http.HttpStatus;
@@ -19,25 +21,25 @@ public class JobController {
 
     //Get all jobs
     @GetMapping("/jobs")
-    public ResponseEntity<List<Job>> findAll(){
+    public ResponseEntity<List<JobResponse>> findAll(){
         return ResponseEntity.ok(jobService.findAll());
     }
 
     //create job
     @PostMapping("/jobs")
-    public ResponseEntity<String> addJob(@RequestBody Job job){
-        jobService.createJob(job);
+    public ResponseEntity<String> addJob(@RequestBody JobRequest jobRequest){
+        jobService.createJob(jobRequest);
         return new ResponseEntity<>("Job added successfully.",HttpStatus.OK);
     }
 
     //Get Job based on ID
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<Job> findJobById(@PathVariable Long id){
-        Job job= jobService.findByID(id);
-        if(job!=null){
-            return new ResponseEntity<>(job,HttpStatus.OK);
+    public ResponseEntity<JobResponse> findJobById(@PathVariable Long id){
+        JobResponse jobResponse= jobService.findByID(id);
+        if(jobResponse!=null){
+            return new ResponseEntity<>(jobResponse,HttpStatus.OK);
         }
-       return new ResponseEntity<>(job,HttpStatus.NOT_FOUND);
+       return new ResponseEntity<>(jobResponse,HttpStatus.NOT_FOUND);
     }
 
     //delete Job based on ID
@@ -52,8 +54,8 @@ public class JobController {
 
     //update Job
     @PutMapping("/jobs/{id}")
-    public ResponseEntity<String> updateJob(@RequestBody Job job,@PathVariable Long id){
-       Boolean jobData= jobService.updateJobById(job,id);
+    public ResponseEntity<String> updateJob(@RequestBody JobRequest jobRequest,@PathVariable Long id){
+       Boolean jobData= jobService.updateJobById(jobRequest,id);
        if(jobData){
            return new ResponseEntity<>("Job Updated Successfully.",HttpStatus.OK);
        }

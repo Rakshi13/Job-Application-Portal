@@ -1,5 +1,6 @@
 package com.rakshith.JobApplication.Controller;
 
+import com.rakshith.JobApplication.DTO.ReviewRequest;
 import com.rakshith.JobApplication.Entity.Review;
 import com.rakshith.JobApplication.Service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ public class ReviewController {
 
     //add a review
     @PostMapping
-    public ResponseEntity<String> addReview(@RequestBody Review review,@PathVariable Long companyId){
-        Boolean reviewFound=reviewService.addCompanyReview(review,companyId);
+    public ResponseEntity<String> addReview(@RequestBody ReviewRequest reviewRequest, @PathVariable Long companyId){
+        Boolean reviewFound=reviewService.addCompanyReview(reviewRequest,companyId);
         if(reviewFound){
             return new ResponseEntity<>("Review Added Successfully.", HttpStatus.OK);
         }
@@ -38,8 +39,8 @@ public class ReviewController {
 
     //update Review
     @PutMapping("/{reviewId}")
-    public ResponseEntity<String> updateReview(@RequestBody Review review,@PathVariable Long reviewId, @PathVariable Long companyId){
-        Boolean reviewFound=reviewService.updateCompanyReview(review,reviewId,companyId);
+    public ResponseEntity<String> updateReview(@RequestBody ReviewRequest reviewRequest,@PathVariable Long reviewId, @PathVariable Long companyId){
+        Boolean reviewFound=reviewService.updateCompanyReview(reviewRequest,reviewId,companyId);
         if(reviewFound){
             return new ResponseEntity<>("Review Updated Successfully",HttpStatus.OK);
         }
