@@ -1,5 +1,7 @@
 package com.rakshith.JobApplication.Controller;
 
+import com.rakshith.JobApplication.DTO.CompanyRequest;
+import com.rakshith.JobApplication.DTO.CompanyResponse;
 import com.rakshith.JobApplication.Entity.Company;
 import com.rakshith.JobApplication.Service.CompanyService;
 import org.springframework.http.HttpStatus;
@@ -20,20 +22,20 @@ public class CompanyController {
 
     //add a company
     @PostMapping
-    public ResponseEntity<Company> addCompany(@RequestBody Company company) {
-        return new ResponseEntity<>(companyService.addCompanyData(company), HttpStatus.OK);
+    public ResponseEntity<String> addCompany(@RequestBody CompanyRequest companyRequest) {
+        return new ResponseEntity<>("Company added successfully", HttpStatus.OK);
     }
 
     //Get all companies
     @GetMapping
-    public ResponseEntity<List<Company>> getAllCompanies() {
+    public ResponseEntity<List<CompanyResponse>> getAllCompanies() {
         return new ResponseEntity<>(companyService.fetchAllCompanies(), HttpStatus.OK);
     }
 
     //Get Company based on ID
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
-        Company company = companyService.fetchCompanyById(id);
+    public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id) {
+        CompanyResponse company = companyService.fetchCompanyById(id);
         if (company != null) {
             return ResponseEntity.ok(company);
         } else {
@@ -43,8 +45,8 @@ public class CompanyController {
 
     //update company based on ID
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCompanyById(@PathVariable Long id,@RequestBody Company company){
-        Boolean companyFound=companyService.modifyCompanyById(id,company);
+    public ResponseEntity<String> updateCompanyById(@PathVariable Long id,@RequestBody CompanyRequest companyRequest){
+        Boolean companyFound=companyService.modifyCompanyById(id,companyRequest);
         if(companyFound){
             return new ResponseEntity<>("Company Updated Successfully",HttpStatus.OK);
         }

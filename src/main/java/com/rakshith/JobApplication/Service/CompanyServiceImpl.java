@@ -1,11 +1,14 @@
 package com.rakshith.JobApplication.Service;
 
+import com.rakshith.JobApplication.DTO.CompanyRequest;
+import com.rakshith.JobApplication.DTO.CompanyResponse;
 import com.rakshith.JobApplication.Entity.Company;
 import com.rakshith.JobApplication.Repository.CompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -18,33 +21,34 @@ public class CompanyServiceImpl implements CompanyService {
 
     //Add Company
     @Override
-    public Company addCompanyData(Company company) {
-        return companyRepository.save(company);
+    public void addCompanyData(CompanyRequest companyRequest) {
+        Company company=new Company();
+        updateCompanyDetials(companyRequest,company);
     }
 
     //fetch all companies
     @Override
-    public List<Company> fetchAllCompanies() {
-        return companyRepository.findAll();
+    public List<CompanyResponse> fetchAllCompanies() {
+        return companyRepository.findAll().stream()
+                .map(this::mapToCompanyResponse)
+                .collect(Collectors.toList());
     }
 
     //fetch Company by ID
     @Override
-    public Company fetchCompanyById(Long id) {
-        return companyRepository.findById(id).orElse(null);
+    public CompanyResponse fetchCompanyById(Long id) {
+        Company companyResponse= companyRepository.findById(id).orElse(null);
+        return mapToCompanyResponse(companyResponse);
     }
 
     //modify Company By ID
     @Override
-    public Boolean modifyCompanyById(Long id, Company company) {
+    public Boolean modifyCompanyById(Long id, CompanyRequest companyRequest) {
         Optional<Company> companyDetails = companyRepository.findById(id);
 
         if (companyDetails.isPresent()) {
             Company companyData = companyDetails.get();
-            companyData.setName(company.getName());
-            companyData.setDescription(company.getDescription());
-            companyData.setJobs(company.getJobs());
-            companyRepository.save(companyData);
+            updateCompanyDetials(companyRequest,companyData);;
             return true;
         }
         return false;
@@ -59,5 +63,20 @@ public class CompanyServiceImpl implements CompanyService {
         } else {
             return false;
         }
+    }
+
+    private void updateCompanyDetials(CompanyRequest companyRequest, Company company) {
+        company.setName(companyRequest.getName());
+        company.setDescription(companyRequest.getDescription());
+        companyRepository.save(company);
+    }
+
+    private CompanyResponse mapToCompanyResponse(Company company) {
+        CompanyResponse companyResponse=new CompanyResponse();
+        companyResponse.setDescription(company.getDescription());
+        companyResponse.setName(company.getName());
+        companyResponse.setTotalJobs(company.getJobs().size());
+        companyResponse.setTotalReviews(company.getReviews().size());
+        return companyResponse;
     }
 }

@@ -1,5 +1,7 @@
 package com.rakshith.JobApplication.Service;
 
+import com.rakshith.JobApplication.DTO.CompanyResponse;
+import com.rakshith.JobApplication.DTO.ReviewRequest;
 import com.rakshith.JobApplication.Entity.Company;
 import com.rakshith.JobApplication.Entity.Review;
 import com.rakshith.JobApplication.Repository.ReviewRepository;
@@ -22,11 +24,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     //add Review
     @Override
-    public Boolean addCompanyReview(Review review, Long companyId) {
-        Company company = companyService.fetchCompanyById(companyId);
+    public Boolean addCompanyReview(ReviewRequest reviewRequest, Long companyId) {
+        CompanyResponse company = companyService.fetchCompanyById(companyId);
         if (company != null) {
-            review.setCompany(company);
-            reviewRepository.save(review);
+            addReviewToTheSpecificCompany(reviewRequest);
             return true;
         }
         return false;
@@ -40,15 +41,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Update Review
     @Override
-    public Boolean updateCompanyReview(Review updatedReview, Long reviewId, Long companyId) {
+    public Boolean updateCompanyReview(ReviewRequest updatedReview, Long reviewId, Long companyId) {
         List<Review> reviews = reviewRepository.findByCompanyId(companyId);
 
         for (Review review1 : reviews) {
             if (review1.getId().equals(reviewId)) {
-                review1.setCompany(updatedReview.getCompany());
-                review1.setTitle(updatedReview.getTitle());
-                review1.setRating(updatedReview.getRating());
-                review1.setDescription(updatedReview.getDescription());
+                //addReviewToTheSpecificCompany(review1);
                 reviewRepository.save(review1);
                 return true;
             }
@@ -81,5 +79,13 @@ public class ReviewServiceImpl implements ReviewService {
             return true;
         }
         return false;
+    }
+
+    private void addReviewToTheSpecificCompany(ReviewRequest reviewRequest) {
+        Review review=new Review();
+        review.setDescription(reviewRequest.getDescription());
+        review.setRating(reviewRequest.getRating());
+        review.setTitle(reviewRequest.getTitle());
+        reviewRepository.save(review);
     }
 }
