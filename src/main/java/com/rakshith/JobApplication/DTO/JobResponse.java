@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class JobResponse {
+    private Long id;
     private String title;
     private String description;
     private Long maxSalary;
