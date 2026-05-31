@@ -38,7 +38,10 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyResponse fetchCompanyById(Long id) {
         Company companyResponse= companyRepository.findById(id).orElse(null);
-        return mapToCompanyResponse(companyResponse);
+        if(companyResponse!=null){
+            return mapToCompanyResponse(companyResponse);
+        }
+        return null;
     }
 
     //modify Company By ID
@@ -73,6 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyResponse mapToCompanyResponse(Company company) {
         CompanyResponse companyResponse=new CompanyResponse();
+        companyResponse.setId(company.getId());
         companyResponse.setDescription(company.getDescription());
         companyResponse.setName(company.getName());
         companyResponse.setTotalJobs(company.getJobs().size());

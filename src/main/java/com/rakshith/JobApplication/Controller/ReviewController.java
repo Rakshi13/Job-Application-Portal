@@ -1,6 +1,7 @@
 package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.ReviewRequest;
+import com.rakshith.JobApplication.DTO.ReviewResponse;
 import com.rakshith.JobApplication.Entity.Review;
 import com.rakshith.JobApplication.Service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class ReviewController {
 
     //Get All reviews
     @GetMapping
-    public ResponseEntity<List<Review>> getAllReview(@PathVariable Long companyId){
+    public ResponseEntity<List<ReviewResponse>> getAllReview(@PathVariable Long companyId){
         return new ResponseEntity<>(reviewService.getAllCompanyReview(companyId),HttpStatus.OK);
     }
 
@@ -50,7 +51,7 @@ public class ReviewController {
 
     //Get Review By ID
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Review> getReviewById(@PathVariable Long reviewId,@PathVariable Long companyId){
+    public ResponseEntity<ReviewResponse> getReviewById(@PathVariable Long reviewId,@PathVariable Long companyId){
         return new ResponseEntity<>(reviewService.getCompanySpecificReview(reviewId,companyId),HttpStatus.OK);
     }
 

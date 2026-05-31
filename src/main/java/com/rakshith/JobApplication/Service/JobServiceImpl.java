@@ -38,7 +38,10 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse findByID(Long id) {
         Job jobData= jobRepository.findById(id).orElse(null);
-        return mapToResponse(jobData);
+        if(jobData!=null){
+            return mapToResponse(jobData);
+        }
+        return null;
     }
 
     //delete job by id
@@ -67,13 +70,15 @@ public class JobServiceImpl implements JobService {
 
     private JobResponse mapToResponse(Job jobs) {
         JobResponse jobResponse=new JobResponse();
+        jobResponse.setId(jobs.getId());
         jobResponse.setTitle(jobs.getTitle());
         jobResponse.setLocation(jobs.getLocation());
         jobResponse.setDescription(jobs.getDescription());
         jobResponse.setMaxSalary(jobs.getMaxSalary());
-        jobResponse.setMinSalary(jobResponse.getMinSalary());
+        jobResponse.setMinSalary(jobs.getMinSalary());
         if(jobs.getCompany()!=null){
             jobResponse.setCompanyId(jobs.getCompany().getId());
+            jobResponse.setCompanyName(jobs.getCompany().getName());
         }
         return jobResponse;
     }
