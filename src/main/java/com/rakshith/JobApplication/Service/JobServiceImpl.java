@@ -4,7 +4,9 @@ import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
 import com.rakshith.JobApplication.Entity.Company;
 import com.rakshith.JobApplication.Entity.Job;
+import com.rakshith.JobApplication.Repository.CompanyRepository;
 import com.rakshith.JobApplication.Repository.JobRepository;
+import com.rakshith.JobApplication.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class JobServiceImpl implements JobService {
     private JobRepository jobRepository;
+    private CompanyRepository companyRepository;
 
-    public JobServiceImpl(JobRepository jobRepository) {
+    public JobServiceImpl(JobRepository jobRepository,CompanyRepository companyRepository) {
         this.jobRepository = jobRepository;
+        this.companyRepository=companyRepository;
     }
 
     //Get All Jobs
@@ -31,7 +35,6 @@ public class JobServiceImpl implements JobService {
     public void createJob(JobRequest jobRequest) {
         Job job=new Job();
         updateJobByRequest(jobRequest,job);
-        jobRepository.save(job);
     }
 
     //find Job By Id
@@ -91,7 +94,10 @@ public class JobServiceImpl implements JobService {
         job.setMinSalary(jobRequest.getMinSalary());
 
         if(jobRequest.getCompanyId()!=null){
-            Company company=new Company();
+            Company company = companyRepository.findById(jobRequest.getCompanyId())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Company not found with id " + jobRequest.getCompanyId()));
             company.setId(jobRequest.getCompanyId());
             job.setCompany(company);
         }
