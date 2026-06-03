@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User {
 
     @Id
@@ -13,7 +14,7 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    private String userName;
+    private String username;
 
     private String password;
 
