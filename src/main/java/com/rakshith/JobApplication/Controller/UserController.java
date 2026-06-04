@@ -1,8 +1,6 @@
 package com.rakshith.JobApplication.Controller;
 
-import com.rakshith.JobApplication.DTO.RegisterRequest;
-import com.rakshith.JobApplication.DTO.RegisterResponse;
-import com.rakshith.JobApplication.DTO.ReviewResponse;
+import com.rakshith.JobApplication.DTO.*;
 import com.rakshith.JobApplication.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -33,5 +31,10 @@ public class UserController {
             return new ResponseEntity<>(registerResponses, HttpStatus.OK);
         }
         return new ResponseEntity<>(registerResponses, HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest){
+        return new ResponseEntity<>(userService.loginUser(loginRequest),HttpStatus.OK);
     }
 }

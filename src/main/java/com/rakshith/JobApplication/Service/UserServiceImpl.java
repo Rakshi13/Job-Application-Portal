@@ -1,21 +1,29 @@
 package com.rakshith.JobApplication.Service;
 
+import com.rakshith.JobApplication.DTO.LoginRequest;
+import com.rakshith.JobApplication.DTO.LoginResponse;
 import com.rakshith.JobApplication.DTO.RegisterRequest;
 import com.rakshith.JobApplication.DTO.RegisterResponse;
 import com.rakshith.JobApplication.Entity.User;
 import com.rakshith.JobApplication.Repository.UserRepository;
+import com.rakshith.JobApplication.exception.InvalidCredentialsException;
+import com.rakshith.JobApplication.exception.ResourceNotFoundException;
 import com.rakshith.JobApplication.exception.UserAlreadyExistsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @Override
@@ -27,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(registerRequest.getRole());
 
         System.out.println(user.getUsername());
@@ -48,6 +56,28 @@ public class UserServiceImpl implements UserService {
                 stream().map(this::mapToRegisterResponse)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public LoginResponse loginUser(LoginRequest loginRequest) {
+        User user = userRepository.findByUsername(loginRequest.getUsername());
+        if(user==null){
+            throw new InvalidCredentialsException("User not found");
+        }
+
+        //passwordEncoder.matches(rawPassword, encodedPassword)
+        //rawPassword = what user enters during login
+        //encodedPassword = what is stored in DB
+        if (!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid password");
+        }
+
+        LoginResponse response = new LoginResponse();
+        response.setUsername(user.getUsername());
+        response.setRole(user.getRole().name());
+        response.setMessage("Login successful");
+
+        return response;
     }
 
     public RegisterResponse mapToRegisterResponse(User user) {
