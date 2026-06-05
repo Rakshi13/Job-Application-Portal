@@ -2,6 +2,7 @@ package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.*;
 import com.rakshith.JobApplication.Service.UserService;
+import com.rakshith.JobApplication.security.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,11 @@ import java.util.List;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil=jwtUtil;
     }
 
     @PostMapping("/register")
@@ -36,5 +39,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest){
         return new ResponseEntity<>(userService.loginUser(loginRequest),HttpStatus.OK);
+    }
+
+    @GetMapping("/token")
+    public String generateToken() {
+        return jwtUtil.generateToken("rakshith");
     }
 }
