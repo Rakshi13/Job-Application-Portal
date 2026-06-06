@@ -45,4 +45,10 @@ public class UserController {
     public String generateToken() {
         return jwtUtil.generateToken("rakshith");
     }
+
+    @GetMapping("/validate")
+    public String validateToken(@RequestParam String token) {
+        boolean valid = jwtUtil.validateToken(token);
+        return "Token Valid = " + valid;
+    }
 }
