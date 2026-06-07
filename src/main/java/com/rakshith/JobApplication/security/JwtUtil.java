@@ -33,10 +33,7 @@ public class JwtUtil {
                                 System.currentTimeMillis() + expiration
                         )
                 )
-                .signWith(
-                        SignatureAlgorithm.HS256,
-                        secret
-                )
+                .signWith(getSigningKey())
                 .compact();
     }
 

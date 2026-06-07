@@ -51,4 +51,10 @@ public class UserController {
         boolean valid = jwtUtil.validateToken(token);
         return "Token Valid = " + valid;
     }
+
+    @GetMapping("/username")
+    public String extractUsername(@RequestParam String token) {
+
+        return jwtUtil.extractUsername(token);
+    }
 }
