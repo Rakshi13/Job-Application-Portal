@@ -3,7 +3,6 @@ package com.rakshith.JobApplication.Controller;
 import com.rakshith.JobApplication.DTO.*;
 import com.rakshith.JobApplication.Service.UserService;
 import com.rakshith.JobApplication.security.JwtUtil;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

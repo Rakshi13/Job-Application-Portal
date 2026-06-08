@@ -2,7 +2,6 @@ package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
-import com.rakshith.JobApplication.Entity.Job;
 import com.rakshith.JobApplication.Service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
