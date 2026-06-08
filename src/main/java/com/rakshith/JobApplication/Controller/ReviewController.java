@@ -2,7 +2,6 @@ package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.ReviewRequest;
 import com.rakshith.JobApplication.DTO.ReviewResponse;
-import com.rakshith.JobApplication.Entity.Review;
 import com.rakshith.JobApplication.Service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
