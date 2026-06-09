@@ -9,6 +9,7 @@ import com.rakshith.JobApplication.Repository.UserRepository;
 import com.rakshith.JobApplication.exception.InvalidCredentialsException;
 import com.rakshith.JobApplication.exception.ResourceNotFoundException;
 import com.rakshith.JobApplication.exception.UserAlreadyExistsException;
+import com.rakshith.JobApplication.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -72,7 +75,12 @@ public class UserServiceImpl implements UserService {
             throw new InvalidCredentialsException("Invalid password");
         }
 
+        String token =
+                jwtUtil.generateToken(
+                        user.getUsername());
+
         LoginResponse response = new LoginResponse();
+        response.setToken(token);
         response.setUsername(user.getUsername());
         response.setRole(user.getRole().name());
         response.setMessage("Login successful");
