@@ -6,6 +6,7 @@ import com.rakshith.JobApplication.security.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,5 +56,14 @@ public class UserController {
     public String extractUsername(@RequestParam String token) {
 
         return jwtUtil.extractUsername(token);
+    }
+
+    @GetMapping("/whoami")
+    public String whoAmI() {
+
+        return SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
     }
 }
