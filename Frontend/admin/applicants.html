@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicants</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- Sidebar -->
+
+        <div class="col-md-2 bg-dark sidebar">
+
+            <h3 class="text-white text-center mt-4">
+                Admin Panel
+            </h3>
+
+            <ul class="nav flex-column mt-5">
+
+                <li class="nav-item mb-3">
+                    <a href="dashboard.html"
+                       class="nav-link text-white">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item mb-3">
+                    <a href="manage-jobs.html"
+                       class="nav-link text-white">
+                        Manage Jobs
+                    </a>
+                </li>
+
+                <li class="nav-item mb-3">
+                    <a href="add-job.html"
+                       class="nav-link text-white">
+                        Add Job
+                    </a>
+                </li>
+
+                <li class="nav-item mb-3">
+                    <a href="applicants.html"
+                       class="nav-link text-primary fw-bold">
+                        Applicants
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="../index.html"
+                       class="nav-link text-danger">
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- Main Content -->
+
+        <div class="col-md-10 p-5">
+
+            <h1 class="fw-bold">
+                Applicants
+            </h1>
+
+            <p class="text-secondary">
+                Manage candidate applications
+            </p>
+
+            <div class="card shadow border-0 rounded-4 mt-4 p-4">
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Resume</th>
+                            <th>Action</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+
+                            <td>Ramu</td>
+
+                            <td>Senior Java Developer</td>
+
+                            <td>20-Jun-2026</td>
+
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-outline-primary">
+                                    View Resume
+                                </button>
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-success">
+                                    Approve
+                                </button>
+
+                                <button class="btn btn-danger ms-2">
+                                    Reject
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Krishna</td>
+
+                            <td>Backend Developer</td>
+
+                            <td>22-Jun-2026</td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    Interview Scheduled
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-outline-primary">
+                                    View Resume
+                                </button>
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-success">
+                                    Approve
+                                </button>
+
+                                <button class="btn btn-danger ms-2">
+                                    Reject
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Rahul</td>
+
+                            <td>Full Stack Developer</td>
+
+                            <td>25-Jun-2026</td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    Selected
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-outline-primary">
+                                    View Resume
+                                </button>
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-success">
+                                    Approve
+                                </button>
+
+                                <button class="btn btn-danger ms-2">
+                                    Reject
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
