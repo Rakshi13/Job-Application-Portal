@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -48,12 +50,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("Is Token Valid: " + valid);
 
             String username = jwtUtil.extractUsername(jwt);
+            String role = jwtUtil.extractRole(jwt);
+
+            System.out.println("Username : " + username);
+            System.out.println("Role : " + role);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             username,
                             null,
-                            Collections.emptyList()
+                            List.of(new SimpleGrantedAuthority(role))
                     );
 
             SecurityContextHolder.getContext()
