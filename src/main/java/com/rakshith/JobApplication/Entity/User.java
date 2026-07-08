@@ -23,4 +23,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Candidate candidate;
+
+    @OneToOne(mappedBy = "user")
+    private Employer employer;
 }

@@ -56,7 +56,9 @@ public class SecurityConfig {
                                 "/token",
                                 "/validate",
                                 "/username",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/candidate/register",
+                                "/employer/register"
                         ).permitAll()
 
                         // Admin APIs
