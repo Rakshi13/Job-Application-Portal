@@ -7,13 +7,15 @@ document.getElementById("register-candidate").addEventListener("click", async fu
     const request = {
         username: document.getElementById("candidate-username").value,
         password: document.getElementById("candidate-password").value,
-
-        // Hardcoded because this page is for candidates
-        role: "ROLE_CANDIDATE"
+        firstName: document.getElementById("candidate-firstname").value,
+        lastName: document.getElementById("candidate-lastname").value,
+        email: document.getElementById("candidate-email").value,
+        mobile: document.getElementById("candidate-mobile").value
     };
+
     console.log(request);
 
-    const response = await fetch("http://localhost:8080/register", {
+    const response = await fetch("http://localhost:8080/candidate/register", {
 
         method: "POST",
 
