@@ -3,8 +3,12 @@ package com.rakshith.JobApplication.Controller;
 import com.rakshith.JobApplication.DTO.CandidateRegisterRequest;
 import com.rakshith.JobApplication.Service.CandidaterService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/candidate")
@@ -22,10 +26,12 @@ public class CandidateController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerCandidate(@Valid @RequestBody CandidateRegisterRequest candidateRegisterRequest){
+    public ResponseEntity<Map<String,String>> registerCandidate(@Valid @RequestBody CandidateRegisterRequest candidateRegisterRequest){
         candidaterService.createCandidates(candidateRegisterRequest);
 
-        return ResponseEntity.ok("Candidate Registered Successfully.");
+        Map<String,String>response=new HashMap<>();
+        response.put("message","Candidate Registered Successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 }
