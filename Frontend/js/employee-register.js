@@ -4,6 +4,7 @@ document.getElementById("register-employer").addEventListener("click", async fun
     console.log("Register Button Clicked");
     e.preventDefault();
     debugger
+    clearErrors();
     const request = {
         companyName: document.getElementById("employer-companyname").value,
         companyEmail: document.getElementById("employer-companyemail").value,
@@ -42,26 +43,78 @@ document.getElementById("register-employer").addEventListener("click", async fun
         },
         body: JSON.stringify(request)
     });
-    
+
     const data = await response.json();
-    
+
     console.log(data);
-    
+    debugger
     if (response.ok) {
-    
         alert(data.message);
-    
+
         setTimeout(() => {
             window.location.href = "login.html";
         }, 1000);
-    
+
     } else {
-    
-        alert(data.message);
-    
+        debugger
+        const fieldMap = {
+            companyName: "companyname-error",
+            companyEmail: "companyemail-error",
+            companyWebsite: "companywebsite-error",
+            HrName: "hrname-error",
+            username: "username-error",
+            password: "password-error"
+        };
+
+        for (const key in data) {
+            const elementId = fieldMap[key];
+
+            if (elementId) {
+                document.getElementById(elementId).textContent = data[key];
+            }
+        }
+        return;
     }
-    
-
-    
-
 });
+
+
+function clearErrors() {
+    document.getElementById("companyname-error").textContent = "";
+    document.getElementById("companyemail-error").textContent = "";
+    document.getElementById("companywebsite-error").textContent = "";
+    document.getElementById("password-error").textContent = "";
+    document.getElementById("username-error").textContent = "";
+    document.getElementById("hrname-error").textContent = "";
+}
+
+
+document.getElementById("employer-companyname")
+    .addEventListener("input", function () {
+        debugger
+        document.getElementById("companyname-error").textContent = "";
+    });
+
+document.getElementById("employer-companywebsite")
+    .addEventListener("input", function () {
+        document.getElementById("companywebsite-error").textContent = "";
+    });
+
+document.getElementById("employer-companyemail")
+    .addEventListener("input", function () {
+        document.getElementById("companyemail-error").textContent = "";
+    });
+
+document.getElementById("employer-hrname")
+    .addEventListener("input", function () {
+        document.getElementById("hrname-error").textContent = "";
+    });
+
+document.getElementById("employer-username")
+    .addEventListener("input", function () {
+        document.getElementById("username-error").textContent = "";
+    });
+
+document.getElementById("employer-password")
+    .addEventListener("input", function () {
+        document.getElementById("password-error").textContent = "";
+    });
