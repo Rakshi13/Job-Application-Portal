@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="#">
+                JobPortal
+            </a>
+
+            <div class="d-flex align-items-center">
+
+                <span class="text-white me-3" id="welcomeUser">
+                    Welcome
+                </span>
+
+                <button class="btn btn-light btn-sm" id="logoutBtn">
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+
+        <h2 class="mb-4">
+            Candidate Dashboard
+        </h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Browse Jobs
+                        </h5>
+
+                        <p class="card-text">
+                            Search and view all available jobs.
+                        </p>
+
+                        <a href="jobs.html" class="btn btn-primary">
+                            Browse
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Applied Jobs
+                        </h5>
+
+                        <p class="card-text">
+                            Track all jobs you have applied for.
+                        </p>
+
+                        <a href="applied-jobs.html" class="btn btn-success">
+                            View
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            My Profile
+                        </h5>
+
+                        <p class="card-text">
+                            Update your personal information.
+                        </p>
+
+                        <a href="candidate-profile.html" class="btn btn-warning">
+                            Profile
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/candidate-dashboard.js"></script>
+
+</body>
+
+</html>

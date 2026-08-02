@@ -76,7 +76,9 @@
                                     Username
                                 </label>
 
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter username">
+                                <input type="text" id="login-username" class="form-control form-control-lg"
+                                    placeholder="Enter username">
+                                <div class="text-danger small" id="user-error"></div>
 
                             </div>
 
@@ -86,8 +88,9 @@
                                     Password
                                 </label>
 
-                                <input type="password" class="form-control form-control-lg"
+                                <input type="password" id="login-password" class="form-control form-control-lg"
                                     placeholder="Enter password">
+                                <div class="text-danger small" id="pass-error"></div>
 
                             </div>
 
@@ -107,9 +110,10 @@
 
                             </div>
 
-                            <button class="btn btn-primary btn-lg w-100">
+                            <button class="btn btn-primary btn-lg w-100" id="login-user">
                                 Login
                             </button>
+                            <div class="text-danger small" id="submit-error"></div>
 
                         </form>
 
@@ -134,7 +138,7 @@
         </div>
 
     </section>
-
+    <script src="/js/login.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
