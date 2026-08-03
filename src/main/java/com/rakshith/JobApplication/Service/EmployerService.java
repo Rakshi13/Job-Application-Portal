@@ -31,11 +31,12 @@ public class EmployerService {
 
         User user=new User();
         user.setUsername(employerRegisterRequest.getUsername());
-        user.setPassword(employerRegisterRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(employerRegisterRequest.getPassword()));
         user.setRole(Role.ROLE_EMPLOYER);
 
         userRepository.save(user);
 
+        //Saving the employer.
         Employer employer=new Employer();
         employer.setCompanyName(employerRegisterRequest.getCompanyName());
         employer.setCompanyEmail(employerRegisterRequest.getCompanyEmail());

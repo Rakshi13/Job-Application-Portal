@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employer Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="#">
+                JobPortal
+            </a>
+
+            <div class="d-flex align-items-center">
+
+                <span class="text-white me-3" id="welcomeUser">
+                    Welcome
+                </span>
+
+                <button class="btn btn-light btn-sm" id="logoutBtn">
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- Dashboard -->
+
+    <div class="container mt-5">
+
+        <div class="mb-4">
+
+            <h2 class="fw-bold">
+                Employer Dashboard
+            </h2>
+
+            <p class="text-muted">
+                Manage your jobs and applicants.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Post Job -->
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h4>📝 Post Job</h4>
+
+                        <p>
+                            Create a new job opening.
+                        </p>
+
+                        <a href="post-job.html"
+                            class="btn btn-primary w-100">
+
+                            Post Job
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- My Jobs -->
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h4>📋 My Jobs</h4>
+
+                        <p>
+                            View, edit and delete posted jobs.
+                        </p>
+
+                        <a href="my-jobs.html"
+                            class="btn btn-success w-100">
+
+                            My Jobs
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Applicants -->
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h4>👥 Applicants</h4>
+
+                        <p>
+                            View candidates who applied.
+                        </p>
+
+                        <a href="applicants.html"
+                            class="btn btn-warning w-100">
+
+                            View Applicants
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Statistics -->
+
+        <div class="row mt-5">
+
+            <div class="col-md-4">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5>Total Jobs</h5>
+
+                        <h2 id="totalJobs">0</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5>Applications</h5>
+
+                        <h2 id="totalApplications">0</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5>Active Jobs</h5>
+
+                        <h2 id="activeJobs">0</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="EMployer/employer-dashboard.js"></script>
+
+</body>
+
+</html>
