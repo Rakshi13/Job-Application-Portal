@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CandidaterService {
+public class CandidateService {
+
     private CandidateRespository candidateRespository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    public CandidaterService(CandidateRespository candidateRespository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CandidateService(CandidateRespository candidateRespository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.candidateRespository = candidateRespository;
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;

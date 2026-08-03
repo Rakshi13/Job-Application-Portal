@@ -1,7 +1,7 @@
 package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.CandidateRegisterRequest;
-import com.rakshith.JobApplication.Service.CandidaterService;
+import com.rakshith.JobApplication.Service.CandidateService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/candidate")
 public class CandidateController {
-    private final CandidaterService candidaterService;
+    private final CandidateService candidateService;
 
-    public CandidateController(CandidaterService candidaterService){
-        this.candidaterService = candidaterService;
+    public CandidateController(CandidateService candidateService){
+        this.candidateService = candidateService;
     }
 
 
@@ -27,7 +27,7 @@ public class CandidateController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> registerCandidate(@Valid @RequestBody CandidateRegisterRequest candidateRegisterRequest){
-        candidaterService.createCandidates(candidateRegisterRequest);
+        candidateService.createCandidates(candidateRegisterRequest);
 
         Map<String,String>response=new HashMap<>();
         response.put("message","Candidate Registered Successfully.");

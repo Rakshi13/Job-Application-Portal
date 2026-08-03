@@ -3,7 +3,6 @@ document.getElementById("register-employer").addEventListener("click", async fun
 
     console.log("Register Button Clicked");
     e.preventDefault();
-    debugger
     clearErrors();
     const request = {
         companyName: document.getElementById("employer-companyname").value,
@@ -47,7 +46,6 @@ document.getElementById("register-employer").addEventListener("click", async fun
     const data = await response.json();
 
     console.log(data);
-    debugger
     if (response.ok) {
         alert(data.message);
 
@@ -56,7 +54,6 @@ document.getElementById("register-employer").addEventListener("click", async fun
         }, 1000);
 
     } else {
-        debugger
         const fieldMap = {
             companyName: "companyname-error",
             companyEmail: "companyemail-error",
@@ -90,7 +87,6 @@ function clearErrors() {
 
 document.getElementById("employer-companyname")
     .addEventListener("input", function () {
-        debugger
         document.getElementById("companyname-error").textContent = "";
     });
 

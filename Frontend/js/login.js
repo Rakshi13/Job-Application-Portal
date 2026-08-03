@@ -35,7 +35,7 @@ document.getElementById('login-user').addEventListener("click", async function (
         if (data.role === "ROLE_CANDIDATE") {
             window.location.href = "candidate/candidate-dashboard.html";
         } else if (data.role === "ROLE_EMPLOYER") {
-            window.location.href = "employer-dashboard.html";
+            window.location.href = "Employer/employer-dashboard.html";
         }
     } else {
         debugger
