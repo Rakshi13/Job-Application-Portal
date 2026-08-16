@@ -1,11 +1,10 @@
 package com.rakshith.JobApplication.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -14,12 +13,16 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration}")
     private long expiration;
+
+
+    // =========================
+    // Generate JWT
+    // =========================
 
     public String generateToken(String username, String role) {
 
@@ -36,17 +39,67 @@ public class JwtUtil {
                 .compact();
     }
 
+
+    // =========================
+    // Extract Username
+    // =========================
+
+    public String extractUsername(String token) {
+
+        return extractAllClaims(token)
+                .getSubject();
+    }
+
+
+    // =========================
+    // Extract Role
+    // =========================
+
     public String extractRole(String token) {
 
         return extractAllClaims(token)
                 .get("role", String.class);
     }
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(
-                secret.getBytes(StandardCharsets.UTF_8)
-        );
+
+    // =========================
+    // Extract Expiration
+    // =========================
+
+    public Date extractExpiration(String token) {
+
+        return extractAllClaims(token)
+                .getExpiration();
     }
+
+
+    // =========================
+    // Validate JWT
+    // =========================
+
+    public boolean validateToken(String token) {
+
+        try {
+
+            Claims claims = extractAllClaims(token);
+
+            return !claims
+                    .getExpiration()
+                    .before(new Date());
+
+        } catch (Exception e) {
+
+            System.out.println("JWT validation failed: "
+                    + e.getMessage());
+
+            return false;
+        }
+    }
+
+
+    // =========================
+    // Extract Claims
+    // =========================
 
     private Claims extractAllClaims(String token) {
 
@@ -57,24 +110,15 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public String extractUsername(String token) {
-        return extractAllClaims(token)
-                .getSubject();
-    }
 
-    public Date extractExpiration(String token) {
-        return extractAllClaims(token)
-                .getExpiration();
-    }
+    // =========================
+    // Signing Key
+    // =========================
 
-    private boolean isTokenExpired(String token) {
+    private SecretKey getSigningKey() {
 
-        return extractExpiration(token)
-                .before(new Date());
-    }
-
-    public boolean validateToken(String token) {
-
-        return !isTokenExpired(token);
+        return Keys.hmacShaKeyFor(
+                secret.getBytes(StandardCharsets.UTF_8)
+        );
     }
 }
