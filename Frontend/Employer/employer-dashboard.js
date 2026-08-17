@@ -3,9 +3,8 @@
 const token = localStorage.getItem("token");
 
 if (!token) {
-
-    window.location.href = "login.html";
-
+    window.location.href = "../login.html";
+    return;
 }
 
 // Show logged-in username
@@ -19,17 +18,15 @@ document.getElementById("welcomeUser").textContent =
 
 document.getElementById("logoutBtn")
     .addEventListener("click", function () {
-
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         localStorage.removeItem("role");
 
-        window.location.href = "login.html";
-
+        window.location.href = "../login.html";
     });
 
 
-// Temporary Dashboard Statistics
+//Temporary Dashboard Statistics
 
 document.getElementById("totalJobs").textContent = "0";
 document.getElementById("totalApplications").textContent = "0";
