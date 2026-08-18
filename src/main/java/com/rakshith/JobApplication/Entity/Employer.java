@@ -15,13 +15,14 @@ public class Employer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String companyName;
-    private String companyEmail;
-    private String companyWebsite;
-    private String HrName;
+    private String hrName;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
 }
