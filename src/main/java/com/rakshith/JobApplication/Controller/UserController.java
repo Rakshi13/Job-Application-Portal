@@ -1,9 +1,6 @@
 package com.rakshith.JobApplication.Controller;
 
-import com.rakshith.JobApplication.DTO.LoginRequest;
-import com.rakshith.JobApplication.DTO.LoginResponse;
-import com.rakshith.JobApplication.DTO.RegisterRequest;
-import com.rakshith.JobApplication.DTO.RegisterResponse;
+import com.rakshith.JobApplication.DTO.*;
 import com.rakshith.JobApplication.Service.UserService;
 import com.rakshith.JobApplication.security.JwtUtil;
 import jakarta.validation.Valid;

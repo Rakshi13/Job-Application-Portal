@@ -25,11 +25,7 @@
             </a>
 
             <div class="d-flex align-items-center">
-
-                <span class="text-white me-3" id="welcomeUser">
-                    Welcome
-                </span>
-
+                
                 <button class="btn btn-light btn-sm" id="logoutBtn">
                     Logout
                 </button>
@@ -40,9 +36,12 @@
 
     </nav>
 
+
     <!-- Dashboard -->
 
     <div class="container mt-5">
+
+        <!-- Header -->
 
         <div class="mb-4">
 
@@ -51,12 +50,55 @@
             </h2>
 
             <p class="text-muted">
-                Manage your jobs and applicants.
+                Manage your company, jobs and applicants.
             </p>
 
         </div>
 
+
+        <!-- Company Section -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h4 class="fw-bold mb-2">
+                            🏢 Company
+                        </h4>
+
+                        <p class="text-muted mb-0" id="companyStatus">
+                            You haven't created a company yet.
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <a href="create-company.html"
+                            class="btn btn-primary"
+                            id="companyBtn">
+
+                            Create Company
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Dashboard Actions -->
+
         <div class="row g-4">
+
 
             <!-- Post Job -->
 
@@ -68,8 +110,8 @@
 
                         <h4>📝 Post Job</h4>
 
-                        <p>
-                            Create a new job opening.
+                        <p class="text-muted">
+                            Create a new job opening for your company.
                         </p>
 
                         <a href="post-job.html"
@@ -85,6 +127,7 @@
 
             </div>
 
+
             <!-- My Jobs -->
 
             <div class="col-md-4">
@@ -95,8 +138,8 @@
 
                         <h4>📋 My Jobs</h4>
 
-                        <p>
-                            View, edit and delete posted jobs.
+                        <p class="text-muted">
+                            View, edit and delete your posted jobs.
                         </p>
 
                         <a href="my-jobs.html"
@@ -112,6 +155,7 @@
 
             </div>
 
+
             <!-- Applicants -->
 
             <div class="col-md-4">
@@ -122,8 +166,8 @@
 
                         <h4>👥 Applicants</h4>
 
-                        <p>
-                            View candidates who applied.
+                        <p class="text-muted">
+                            View candidates who applied for your jobs.
                         </p>
 
                         <a href="applicants.html"
@@ -141,19 +185,27 @@
 
         </div>
 
+
         <!-- Statistics -->
 
         <div class="row mt-5">
 
+
+            <!-- Total Jobs -->
+
             <div class="col-md-4">
 
                 <div class="card text-center shadow-sm">
 
                     <div class="card-body">
 
-                        <h5>Total Jobs</h5>
+                        <h5 class="text-muted">
+                            Total Jobs
+                        </h5>
 
-                        <h2 id="totalJobs">0</h2>
+                        <h2 id="totalJobs">
+                            0
+                        </h2>
 
                     </div>
 
@@ -161,15 +213,22 @@
 
             </div>
 
+
+            <!-- Applications -->
+
             <div class="col-md-4">
 
                 <div class="card text-center shadow-sm">
 
                     <div class="card-body">
 
-                        <h5>Applications</h5>
+                        <h5 class="text-muted">
+                            Applications
+                        </h5>
 
-                        <h2 id="totalApplications">0</h2>
+                        <h2 id="totalApplications">
+                            0
+                        </h2>
 
                     </div>
 
@@ -177,15 +236,22 @@
 
             </div>
 
+
+            <!-- Active Jobs -->
+
             <div class="col-md-4">
 
                 <div class="card text-center shadow-sm">
 
                     <div class="card-body">
 
-                        <h5>Active Jobs</h5>
+                        <h5 class="text-muted">
+                            Active Jobs
+                        </h5>
 
-                        <h2 id="activeJobs">0</h2>
+                        <h2 id="activeJobs">
+                            0
+                        </h2>
 
                     </div>
 
@@ -196,6 +262,7 @@
         </div>
 
     </div>
+
 
     <script src="employer-dashboard.js"></script>
 
