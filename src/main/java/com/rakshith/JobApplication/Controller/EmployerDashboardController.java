@@ -14,8 +14,7 @@ public class EmployerDashboardController {
 
     private final EmployerDashboardService employerDashboardService;
 
-    public EmployerDashboardController(
-            EmployerDashboardService employerDashboardService) {
+    public EmployerDashboardController(EmployerDashboardService employerDashboardService) {
         this.employerDashboardService = employerDashboardService;
     }
 
