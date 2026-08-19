@@ -79,8 +79,7 @@ public class CompanyServiceImpl implements CompanyService {
         companyResponse.setId(company.getId());
         companyResponse.setDescription(company.getDescription());
         companyResponse.setName(company.getName());
-        companyResponse.setTotalJobs(company.getJobs().size());
-        companyResponse.setTotalReviews(company.getReviews().size());
+        companyResponse.setWebsite(company.getWebsite());
         return companyResponse;
     }
 }

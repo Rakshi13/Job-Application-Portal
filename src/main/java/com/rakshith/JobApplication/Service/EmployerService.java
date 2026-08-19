@@ -50,11 +50,8 @@ public class EmployerService {
 
         userRepository.save(user);
 
-
         // Create Employer
         Employer employer = new Employer();
-
-        employer.setHrName(employerRegisterRequest.getHrName());
         employer.setUser(user);
 
         employerRepository.save(employer);

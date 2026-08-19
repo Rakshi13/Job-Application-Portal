@@ -20,7 +20,7 @@ public class EmployerDashboardService {
 
     public EmployerDashboardResponse getDashboardEmployerDetails(){
 
-        //step 1 : get the username from Spring Security
+        // Step 1: Get username from Spring Security
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
@@ -31,15 +31,21 @@ public class EmployerDashboardService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-
+        // Step 3: Get Employer
         Employer employer=user.getEmployer();
 
+        if (employer == null) {
+            throw new RuntimeException("Employer profile not found");
+        }
+
+        // Step 4: Get Company
         Company company=employer.getCompany();
 
+        // Step 5: Employer doesn't have a company
         if(company==null){
             return new EmployerDashboardResponse(username,false,null);
         }else{
-
+            // Step 6: Employer has a company
             CompanyResponse companyResponse =
                     new CompanyResponse(
                             company.getId(),

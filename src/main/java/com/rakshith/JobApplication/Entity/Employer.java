@@ -15,8 +15,6 @@ public class Employer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String hrName;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
