@@ -22,8 +22,7 @@ public class EmployerDashboardController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<EmployerDashboardResponse> getDashboard() {
 
-        EmployerDashboardResponse response =
-                employerDashboardService.getDashboardEmployerDetails();
+        EmployerDashboardResponse response = employerDashboardService.getDashboardEmployerDetails();
 
         return ResponseEntity.ok(response);
     }

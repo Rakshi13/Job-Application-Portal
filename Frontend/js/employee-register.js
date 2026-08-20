@@ -1,6 +1,6 @@
 console.log("Employer JS Loaded");
 document.getElementById("register-employer").addEventListener("click", async function (e) {
-
+    debugger
     console.log("Register Button Clicked");
     e.preventDefault();
     clearErrors();

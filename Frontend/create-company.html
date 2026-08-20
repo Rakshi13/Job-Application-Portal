@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Company</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-dark bg-primary">
+
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="employer-dashboard.html">
+                JobPortal
+            </a>
+
+            <button class="btn btn-light btn-sm" id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+
+    <div class="container mt-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-7 col-lg-6">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body p-4">
+
+                        <h2 class="fw-bold mb-2">
+                            Create Your Company
+                        </h2>
+
+                        <p class="text-muted mb-4">
+                            Add your company details to start posting jobs.
+                        </p>
+
+
+                        <!-- Success Message -->
+
+                        <div id="successMessage"
+                            class="alert alert-success d-none">
+                        </div>
+
+
+                        <!-- Error Message -->
+
+                        <div id="errorMessage"
+                            class="alert alert-danger d-none">
+                        </div>
+
+
+                        <!-- Company Form -->
+
+                        <form id="companyForm">
+
+                            <!-- Company Name -->
+
+                            <div class="mb-3">
+
+                                <label for="name"
+                                    class="form-label fw-semibold">
+
+                                    Company Name
+
+                                </label>
+
+                                <input type="text"
+                                    class="form-control"
+                                    id="name"
+                                    placeholder="Enter company name"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Company Email -->
+
+                            <div class="mb-3">
+
+                                <label for="email"
+                                    class="form-label fw-semibold">
+
+                                    Company Email
+
+                                </label>
+
+                                <input type="email"
+                                    class="form-control"
+                                    id="email"
+                                    placeholder="Enter company email"
+                                    required>
+
+                            </div>
+
+
+                            <!-- Company Website -->
+
+                            <div class="mb-3">
+
+                                <label for="website"
+                                    class="form-label fw-semibold">
+
+                                    Company Website
+
+                                </label>
+
+                                <input type="url"
+                                    class="form-control"
+                                    id="website"
+                                    placeholder="https://example.com">
+
+                            </div>
+
+
+                            <!-- Company Description -->
+
+                            <div class="mb-4">
+
+                                <label for="description"
+                                    class="form-label fw-semibold">
+
+                                    Description
+
+                                </label>
+
+                                <textarea
+                                    class="form-control"
+                                    id="description"
+                                    rows="5"
+                                    placeholder="Describe your company"
+                                    required></textarea>
+
+                            </div>
+
+
+                            <!-- Buttons -->
+
+                            <div class="d-flex gap-2">
+
+                                <a href="employer-dashboard.html"
+                                    class="btn btn-secondary w-50">
+
+                                    Cancel
+
+                                </a>
+
+                                <button type="submit"
+                                    class="btn btn-primary w-50"
+                                    id="createCompanyBtn">
+
+                                    Create Company
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="js/create-company.js"></script>
+
+</body>
+
+</html>
