@@ -132,4 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "../login.html";
         });
 
+
+    const createCompanyBtn = document.getElementById("createCompanyBtn");
+
+    createCompanyBtn.addEventListener("click", function () {
+        debugger
+        window.location.href = "../create-company.html";
+
+    });
+
 });

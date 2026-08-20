@@ -55,11 +55,7 @@ public class EmployerDashboardService {
                             company.getDescription()
                     );
 
-            return new EmployerDashboardResponse(
-                    username,
-                    true,
-                    companyResponse
-            );
+            return new EmployerDashboardResponse(username, true, companyResponse);
         }
     }
 }

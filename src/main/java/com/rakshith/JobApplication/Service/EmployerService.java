@@ -29,31 +29,28 @@ public class EmployerService {
     }
 
     @Transactional
-    public void createEmployer(EmployerRegisterRequest employerRegisterRequest) {
-
-        if (userRepository.existsByUsername(
-                employerRegisterRequest.getUsername())) {
-
+    public void createEmployer(EmployerRegisterRequest request) {
+        // 1. Check username
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
 
-        // Create User
+        // 2. Create User
         User user = new User();
-
-        user.setUsername(employerRegisterRequest.getUsername());
+        user.setUsername(request.getUsername());
         user.setPassword(
-                passwordEncoder.encode(
-                        employerRegisterRequest.getPassword()
-                )
+                passwordEncoder.encode(request.getPassword())
         );
         user.setRole(Role.ROLE_EMPLOYER);
-
         userRepository.save(user);
 
-        // Create Employer
+        // 3. Create Employer
         Employer employer = new Employer();
         employer.setUser(user);
 
+        // Company is NULL initially
+        employer.setCompany(null);
         employerRepository.save(employer);
+
     }
 }
