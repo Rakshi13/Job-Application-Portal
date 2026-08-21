@@ -3,10 +3,16 @@ package com.rakshith.JobApplication.Service;
 import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
 import com.rakshith.JobApplication.Entity.Company;
+import com.rakshith.JobApplication.Entity.Employer;
 import com.rakshith.JobApplication.Entity.Job;
+import com.rakshith.JobApplication.Entity.User;
 import com.rakshith.JobApplication.Repository.CompanyRepository;
 import com.rakshith.JobApplication.Repository.JobRepository;
+import com.rakshith.JobApplication.Repository.UserRepository;
 import com.rakshith.JobApplication.exception.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,13 +20,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class JobServiceImpl implements JobService {
-    private JobRepository jobRepository;
-    private CompanyRepository companyRepository;
 
-    public JobServiceImpl(JobRepository jobRepository,CompanyRepository companyRepository) {
+    private final JobRepository jobRepository;
+    private final UserRepository userRepository;
+
+    public JobServiceImpl(
+            JobRepository jobRepository,
+            UserRepository userRepository) {
+
         this.jobRepository = jobRepository;
-        this.companyRepository=companyRepository;
+        this.userRepository = userRepository;
     }
+
 
     //Get All Jobs
     @Override
@@ -32,9 +43,70 @@ public class JobServiceImpl implements JobService {
 
     //create Job
     @Override
-    public void createJob(JobRequest jobRequest) {
-        Job job=new Job();
-        updateJobByRequest(jobRequest,job);
+    @Transactional
+    public JobResponse createJob(JobRequest jobRequest) {
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username = authentication.getName();
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        // Step 3: Find Employer
+        Employer employer = user.getEmployer();
+
+        if (employer == null) {
+            throw new RuntimeException("Employer profile not found");
+        }
+
+        // Step 4: Find Company
+        Company company = employer.getCompany();
+
+        if (company == null) {
+            throw new RuntimeException(
+                    "Please create a company before posting a job");
+        }
+
+        // Step 5: Create Job
+        Job job = new Job();
+
+        job.setTitle(jobRequest.getTitle());
+        job.setDescription(jobRequest.getDescription());
+        job.setMinSalary(jobRequest.getMinSalary());
+        job.setMaxSalary(jobRequest.getMaxSalary());
+        job.setLocation(jobRequest.getLocation());
+
+        // VERY IMPORTANT
+        job.setCompany(company);
+
+        // Step 6: Save Job
+        Job savedJob = jobRepository.save(job);
+
+        // Step 7: Convert to response
+        return mapToJobResponse(savedJob);
+    }
+
+    private JobResponse mapToJobResponse(Job job) {
+        JobResponse response = new JobResponse();
+
+        response.setId(job.getId());
+        response.setTitle(job.getTitle());
+        response.setDescription(job.getDescription());
+        response.setMinSalary(job.getMinSalary());
+        response.setMaxSalary(job.getMaxSalary());
+        response.setLocation(job.getLocation());
+
+        response.setCompanyId(job.getCompany().getId());
+        response.setCompanyName(job.getCompany().getName());
+
+        return response;
     }
 
     //find Job By Id
@@ -93,15 +165,6 @@ public class JobServiceImpl implements JobService {
         job.setMaxSalary(jobRequest.getMaxSalary());
         job.setMinSalary(jobRequest.getMinSalary());
 
-        if(jobRequest.getCompanyId()!=null){
-            Company company = companyRepository.findById(jobRequest.getCompanyId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Company not found with id " + jobRequest.getCompanyId()));
-            company.setId(jobRequest.getCompanyId());
-            job.setCompany(company);
-        }
-        ;
         jobRepository.save(job);
     }
 }

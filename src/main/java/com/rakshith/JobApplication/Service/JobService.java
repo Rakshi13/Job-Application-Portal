@@ -12,7 +12,9 @@ public interface JobService {
      List<JobResponse> findAll();
 
      //Add Job
-     void createJob(JobRequest jobRequest);
+     JobResponse createJob(JobRequest jobRequest);
+
+     //List<JobResponse> getEmployerJobs();
 
      //Get Job By id
      JobResponse findByID(Long id);
