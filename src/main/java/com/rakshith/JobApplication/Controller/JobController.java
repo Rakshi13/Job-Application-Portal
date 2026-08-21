@@ -84,4 +84,17 @@ public class JobController {
        }
        return new ResponseEntity<>("Job Not found",HttpStatus.NOT_FOUND);
     }
+
+    @PostMapping("/jobs")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<JobResponse> createJob(
+            @Valid @RequestBody JobRequest jobRequest) {
+
+        JobResponse response =
+                jobService.createJob(jobRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
 }

@@ -7,10 +7,9 @@ public class JobResponse {
     private Long id;
     private String title;
     private String description;
-    private Long maxSalary;
     private Long minSalary;
+    private Long maxSalary;
     private String location;
-
     private Long companyId;
     private String companyName;
 }

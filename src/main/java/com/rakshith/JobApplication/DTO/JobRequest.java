@@ -21,7 +21,4 @@ public class JobRequest {
 
     @NotBlank(message = "Job Location cannot be empty.")
     private String location;
-
-    @NotNull(message = "Company Id cannot be null")
-    private Long companyId;
 }
