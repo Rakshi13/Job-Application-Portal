@@ -9,7 +9,7 @@ import java.util.List;
 public interface JobService {
 
      //Get All Jobs
-     List<JobResponse> findAll();
+     List<JobResponse> findEmployerJobs();
 
      //Add Job
      JobResponse createJob(JobRequest jobRequest);
