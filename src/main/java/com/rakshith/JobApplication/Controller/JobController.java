@@ -23,24 +23,14 @@ public class JobController {
 
     //Get all jobs
     @Operation(
-            summary = "Get All Jobs",
-            description = "Returns all the jobs available in the system"
-    )
-    @GetMapping("/jobs")
-    public ResponseEntity<List<JobResponse>> findAll(){
-        return ResponseEntity.ok(jobService.findAll());
-    }
-
-    //create job
-    @Operation(
-            summary = "Create a new Job",
-            description = "Creates a new Job to the specific company"
+            summary = "Get Employer Jobs",
+            description = "Returns all jobs belonging to the logged-in employer's company"
     )
     @PreAuthorize("hasRole('EMPLOYER')")
-    @PostMapping("/jobs")
-    public ResponseEntity<String> addJob(@Valid @RequestBody JobRequest jobRequest){
-        jobService.createJob(jobRequest);
-        return new ResponseEntity<>("Job added successfully.",HttpStatus.OK);
+    @GetMapping("/jobs")
+    public ResponseEntity<List<JobResponse>> findEmployerJobs() {
+
+        return ResponseEntity.ok(jobService.findEmployerJobs());
     }
 
     //Get Job based on ID
@@ -85,6 +75,10 @@ public class JobController {
        return new ResponseEntity<>("Job Not found",HttpStatus.NOT_FOUND);
     }
 
+    @Operation(
+            summary = "Create a new Job",
+            description = "Creates a new Job to the specific company"
+    )
     @PostMapping("/jobs")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobResponse> createJob(

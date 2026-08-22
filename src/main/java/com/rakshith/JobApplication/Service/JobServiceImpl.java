@@ -35,9 +35,49 @@ public class JobServiceImpl implements JobService {
 
     //Get All Jobs
     @Override
-    public List<JobResponse> findAll() {
-        return jobRepository.findAll().stream()
-                .map(this::mapToResponse)
+    public List<JobResponse> findEmployerJobs() {
+
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username = authentication.getName();
+
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+
+        // Step 3: Find Employer
+        Employer employer = user.getEmployer();
+
+        if (employer == null) {
+
+            throw new RuntimeException(
+                    "Employer profile not found");
+        }
+
+
+        // Step 4: Find Company
+        Company company = employer.getCompany();
+
+        if (company == null) {
+
+            throw new RuntimeException(
+                    "Company not found");
+        }
+
+
+        // Step 5: Find jobs belonging to this company
+        return jobRepository
+                .findByCompanyId(company.getId())
+                .stream()
+                .map(this::mapToJobResponse)
                 .collect(Collectors.toList());
     }
 
