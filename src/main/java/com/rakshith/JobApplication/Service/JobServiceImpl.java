@@ -133,22 +133,6 @@ public class JobServiceImpl implements JobService {
         return mapToJobResponse(savedJob);
     }
 
-    private JobResponse mapToJobResponse(Job job) {
-        JobResponse response = new JobResponse();
-
-        response.setId(job.getId());
-        response.setTitle(job.getTitle());
-        response.setDescription(job.getDescription());
-        response.setMinSalary(job.getMinSalary());
-        response.setMaxSalary(job.getMaxSalary());
-        response.setLocation(job.getLocation());
-
-        response.setCompanyId(job.getCompany().getId());
-        response.setCompanyName(job.getCompany().getName());
-
-        return response;
-    }
-
     //find Job By Id
     @Override
     public JobResponse findByID(Long id) {
@@ -162,25 +146,161 @@ public class JobServiceImpl implements JobService {
     //delete job by id
     @Override
     public Boolean deleteJobById(Long id) {
-        if (jobRepository.existsById(id)) {
-            jobRepository.deleteById(id);
-            return true;
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username =
+                authentication.getName();
+
+
+        // Step 2: Find User
+        User user =
+                userRepository
+                        .findByUsername(username)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User not found"
+                                ));
+
+
+        // Step 3: Find Employer
+        Employer employer =
+                user.getEmployer();
+
+        if (employer == null) {
+
+            throw new RuntimeException(
+                    "Employer profile not found"
+            );
         }
-        return false;
+
+        // Step 4: Find Company
+        Company company =
+                employer.getCompany();
+
+        if (company == null) {
+
+            throw new RuntimeException(
+                    "Company not found"
+            );
+        }
+
+
+        // Step 5: Find Job
+        Job job =
+                jobRepository
+                        .findById(id)
+                        .orElse(null);
+
+        if (job == null) {
+
+            return false;
+        }
+
+        // Step 6: Verify Job belongs to
+        //         logged-in employer's company
+
+        if (!job.getCompany()
+                .getId()
+                .equals(company.getId())) {
+
+            throw new RuntimeException(
+                    "You are not authorized to delete this job"
+            );
+        }
+
+
+        // Step 7: Delete Job
+        jobRepository.delete(job);
+
+
+        // Step 8: Return success
+        return true;
+
     }
 
     //update job
     @Override
+    @Transactional
     public Boolean updateJobById(JobRequest jobRequest, Long id) {
 
-        Optional<Job> optionalJob = jobRepository.findById(id);
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
 
-        if (optionalJob.isPresent()) {
-            Job jobData = optionalJob.get();
-            updateJobByRequest(jobRequest,jobData);
-            return true;
+        String username = authentication.getName();
+
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+
+        // Step 3: Find Employer
+        Employer employer = user.getEmployer();
+
+        if (employer == null) {
+
+            throw new RuntimeException(
+                    "Employer profile not found");
         }
-        return false;
+
+        // Step 4: Find Company
+        Company company = employer.getCompany();
+
+        if (company == null) {
+
+            throw new RuntimeException(
+                    "Company not found");
+        }
+
+        // Step 5: Find Job
+        Job job = jobRepository
+                .findById(id)
+                .orElse(null);
+
+        if (job == null) {
+            return false;
+        }
+
+        // Step 6: Verify Job belongs to Employer's Company
+        if (!job.getCompany()
+                .getId()
+                .equals(company.getId())) {
+
+            throw new RuntimeException(
+                    "You are not authorized to update this job");
+        }
+
+
+        // Step 7: Update Job fields
+        job.setTitle(jobRequest.getTitle());
+
+        job.setDescription(
+                jobRequest.getDescription());
+
+        job.setMinSalary(
+                jobRequest.getMinSalary());
+
+        job.setMaxSalary(
+                jobRequest.getMaxSalary());
+
+        job.setLocation(
+                jobRequest.getLocation());
+
+
+        // Step 8: Save updated Job
+        jobRepository.save(job);
+
+        // Step 9: Return success
+        return true;
     }
 
     private JobResponse mapToResponse(Job jobs) {
@@ -206,5 +326,21 @@ public class JobServiceImpl implements JobService {
         job.setMinSalary(jobRequest.getMinSalary());
 
         jobRepository.save(job);
+    }
+
+    private JobResponse mapToJobResponse(Job job) {
+        JobResponse response = new JobResponse();
+
+        response.setId(job.getId());
+        response.setTitle(job.getTitle());
+        response.setDescription(job.getDescription());
+        response.setMinSalary(job.getMinSalary());
+        response.setMaxSalary(job.getMaxSalary());
+        response.setLocation(job.getLocation());
+
+        response.setCompanyId(job.getCompany().getId());
+        response.setCompanyName(job.getCompany().getName());
+
+        return response;
     }
 }

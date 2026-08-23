@@ -49,16 +49,26 @@ public class JobController {
 
     //delete Job based on ID
     @Operation(
-            summary = "Delete a job",
-            description = "Deletes the job based on the ID."
+            summary = "Delete a Job",
+            description = "Deletes a job belonging to the logged-in employer's company"
     )
     @DeleteMapping("/jobs/{id}")
-    public ResponseEntity<String> deleteJob(@PathVariable Long id){
-        Boolean jobFound=jobService.deleteJobById(id);
-        if(jobFound){
-            return ResponseEntity.ok("Job Deleted Successfully");
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<String> deleteJob(@PathVariable Long id) {
+
+        Boolean jobDeleted =
+                jobService.deleteJobById(id);
+
+        if (jobDeleted) {
+
+            return ResponseEntity.ok(
+                    "Job Deleted Successfully."
+            );
         }
-        return new ResponseEntity<>("Job Not Found.",HttpStatus.NOT_FOUND);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("Job Not Found.");
     }
 
     //update Job
@@ -66,13 +76,24 @@ public class JobController {
             summary = "Update the Job based on the Job Id",
             description = "Updates the job based on the Id."
     )
+    @PreAuthorize("hasRole('EMPLOYER')")
     @PutMapping("/jobs/{id}")
-    public ResponseEntity<String> updateJob(@Valid @RequestBody JobRequest jobRequest,@PathVariable Long id){
-       Boolean jobData= jobService.updateJobById(jobRequest,id);
-       if(jobData){
-           return new ResponseEntity<>("Job Updated Successfully.",HttpStatus.OK);
-       }
-       return new ResponseEntity<>("Job Not found",HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> updateJob(
+            @Valid @RequestBody JobRequest jobRequest,
+            @PathVariable Long id) {
+
+        Boolean jobUpdated = jobService.updateJobById(jobRequest, id);
+
+        if (jobUpdated) {
+
+            return ResponseEntity.ok(
+                    "Job Updated Successfully."
+            );
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("Job Not Found.");
     }
 
     @Operation(
