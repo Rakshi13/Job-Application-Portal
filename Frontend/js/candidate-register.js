@@ -1,9 +1,7 @@
 //calling register for candidate api.
 document.getElementById("register-candidate")
     .addEventListener("click", async function (e) {
-        debugger
         e.preventDefault();
-        debugger
         clearErrors();
 
         const request = {
@@ -31,9 +29,7 @@ document.getElementById("register-candidate")
 
 
             alert(data.message);
-            debugger
             setTimeout(() => {
-                debugger
                 window.location.href = "login.html";
             }, 1000);
 
@@ -79,7 +75,6 @@ function clearErrors() {
 
 document.getElementById("candidate-firstname")
     .addEventListener("input", function () {
-        debugger
         document.getElementById("firstname-error").textContent = "";
     });
 
