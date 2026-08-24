@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Get JWT token
     const token = localStorage.getItem("token");
-    debugger
     // Redirect if user is not logged in
     if (!token) {
         window.location.href = "../login.html";
@@ -22,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("totalApplications").textContent = "0";
     document.getElementById("activeJobs").textContent = "0";
 
-    debugger
     // Call GET /employer/dashboard
     loadEmployerDashboard();
 
@@ -41,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             );
-            debugger
 
 
             // JWT invalid / expired
@@ -136,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const createCompanyBtn = document.getElementById("createCompanyBtn");
 
     createCompanyBtn.addEventListener("click", function () {
-        debugger
         window.location.href = "../create-company.html";
 
     });

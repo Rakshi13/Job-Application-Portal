@@ -4,7 +4,6 @@ document.getElementById('login-user').addEventListener("click", async function (
 
     console.log("User logged in successfully.");
     e.preventDefault();
-    debugger
 
     clearLoginData();
 
@@ -25,8 +24,6 @@ document.getElementById('login-user').addEventListener("click", async function (
 
     const data = await loginResponse.json();
 
-    debugger
-
     if (loginResponse.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.username);
@@ -40,7 +37,6 @@ document.getElementById('login-user').addEventListener("click", async function (
             window.location.href = "admin/dashboard.html";
         }
     } else {
-        debugger
         const fieldMap = {
             message: "submit-error"
         };
