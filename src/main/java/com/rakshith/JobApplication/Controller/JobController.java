@@ -26,12 +26,24 @@ public class JobController {
             summary = "Get Employer Jobs",
             description = "Returns all jobs belonging to the logged-in employer's company"
     )
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("hasAnyRole('EMPLOYER','CANDIDATE')")
     @GetMapping("/jobs")
     public ResponseEntity<List<JobResponse>> findEmployerJobs() {
 
         return ResponseEntity.ok(jobService.findEmployerJobs());
     }
+
+    @Operation(
+            summary = "Get All Jobs available in the System.",
+            description = "Returns all jobs"
+    )
+    @PreAuthorize("hasAnyRole('EMPLOYER','CANDIDATE')")
+    @GetMapping("/AllJobs")
+    public ResponseEntity<List<JobResponse>> getAllJobs(){
+        return ResponseEntity.ok(jobService.findAllJobs());
+    }
+
+
 
     //Get Job based on ID
     @Operation(

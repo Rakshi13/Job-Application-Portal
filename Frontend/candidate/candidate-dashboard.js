@@ -2,7 +2,6 @@ const username = localStorage.getItem("username");
 
 if (!username) {
     window.location.href = "../login.html";
-    return;
 }
 
 document.getElementById("welcomeUser").textContent =
