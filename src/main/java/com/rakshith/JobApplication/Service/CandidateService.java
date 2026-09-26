@@ -26,6 +26,7 @@ public class CandidateService {
     @Transactional
     public void createCandidates(CandidateRegisterRequest candidateRegisterRequest){
 
+        //check if user exists or not.
         if(userRepository.existsByUsername(candidateRegisterRequest.getUsername())){
             throw new RuntimeException("Username already exists");
         }
@@ -39,10 +40,6 @@ public class CandidateService {
 
         //saving the candidate.
         Candidate candidate=new Candidate();
-        candidate.setFirstName(candidateRegisterRequest.getFirstName());
-        candidate.setLastName(candidateRegisterRequest.getLastName());
-        candidate.setEmail(candidateRegisterRequest.getEmail());
-        candidate.setMobile(candidateRegisterRequest.getMobile());
         candidate.setUser(user);
         candidateRespository.save(candidate);
     }

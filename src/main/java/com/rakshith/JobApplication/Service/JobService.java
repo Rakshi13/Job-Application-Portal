@@ -8,8 +8,11 @@ import java.util.List;
 
 public interface JobService {
 
-     //Get All Jobs
+     //Get All Jobs for Employer to the specific company.
      List<JobResponse> findEmployerJobs();
+
+     //Get All Jobs.
+     List<JobResponse> findAllJobs();
 
      //Add Job
      JobResponse createJob(JobRequest jobRequest);

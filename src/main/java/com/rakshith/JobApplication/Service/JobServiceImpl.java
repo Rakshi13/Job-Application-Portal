@@ -33,7 +33,7 @@ public class JobServiceImpl implements JobService {
     }
 
 
-    //Get All Jobs
+    //Get All Jobs for Employers.
     @Override
     public List<JobResponse> findEmployerJobs() {
 
@@ -51,7 +51,6 @@ public class JobServiceImpl implements JobService {
                 .findByUsername(username)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
-
 
         // Step 3: Find Employer
         Employer employer = user.getEmployer();
@@ -78,6 +77,15 @@ public class JobServiceImpl implements JobService {
                 .findByCompanyId(company.getId())
                 .stream()
                 .map(this::mapToJobResponse)
+                .collect(Collectors.toList());
+    }
+
+    //Get All Jobs
+    @Override
+    public List<JobResponse> findAllJobs(){
+        return jobRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 

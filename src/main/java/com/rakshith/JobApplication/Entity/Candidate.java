@@ -17,11 +17,6 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String mobile;
-
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
