@@ -166,10 +166,64 @@ function displayJob(job) {
 }
 
 
-function applyForJob(jobId) {
+async function applyForJob(jobId) {
 
-    alert("Apply functionality will be implemented next.");
+    const token = localStorage.getItem("token");
 
+    if (!token) {
+        alert("Please login again.");
+        window.location.href = "../login.html";
+        return;
+    }
+
+    const confirmApply = confirm(
+        "Are you sure you want to apply for this job?"
+    );
+
+    if (!confirmApply) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:8080/jobs/${jobId}/apply`,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (response.status === 401) {
+
+            alert("Session expired. Please login again.");
+            window.location.href = "../login.html";
+            return;
+        }
+
+        if (response.status === 403) {
+
+            alert("You are not allowed to apply for this job.");
+            return;
+        }
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            alert(errorMessage || "Failed to apply for the job.");
+            return;
+        }
+
+        const result = await response.text();
+        alert(result);
+
+    } catch (error) {
+
+        console.error("Error applying for job:", error);
+
+        alert("Something went wrong. Please try again.");
+    }
 }
 
 
