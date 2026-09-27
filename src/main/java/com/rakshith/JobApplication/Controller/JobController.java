@@ -1,5 +1,6 @@
 package com.rakshith.JobApplication.Controller;
 
+import com.rakshith.JobApplication.DTO.AppliedJobsResponse;
 import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
 import com.rakshith.JobApplication.Service.JobService;
@@ -124,4 +125,30 @@ public class JobController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    @Operation(
+            summary = "Apply to a new Job",
+            description = "Allows a candidate to apply for a specific job"
+    )
+    @PostMapping("/jobs/{jobId}/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<String> applyJob(@PathVariable Long jobId){
+        Boolean isApplied=jobService.applyNewJob(jobId);
+
+        if(isApplied){
+            return ResponseEntity.ok("Job Applied Successfully.");
+        }else{
+            return ResponseEntity.ok("Job Already Exists");
+        }
+
+    }
+
+    @GetMapping("/candidate/applied-jobs")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<List<AppliedJobsResponse>> getAppliedJobs(){
+
+        return ResponseEntity.ok(jobService.getAllAppliedJobs());
+
+    }
+
 }

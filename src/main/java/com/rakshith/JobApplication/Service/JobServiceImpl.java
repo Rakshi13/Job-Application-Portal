@@ -1,12 +1,11 @@
 package com.rakshith.JobApplication.Service;
 
+import com.rakshith.JobApplication.DTO.AppliedJobsResponse;
 import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
-import com.rakshith.JobApplication.Entity.Company;
-import com.rakshith.JobApplication.Entity.Employer;
-import com.rakshith.JobApplication.Entity.Job;
-import com.rakshith.JobApplication.Entity.User;
+import com.rakshith.JobApplication.Entity.*;
 import com.rakshith.JobApplication.Repository.CompanyRepository;
+import com.rakshith.JobApplication.Repository.JobApplicationRepository;
 import com.rakshith.JobApplication.Repository.JobRepository;
 import com.rakshith.JobApplication.Repository.UserRepository;
 import com.rakshith.JobApplication.exception.ResourceNotFoundException;
@@ -15,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,13 +23,16 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
+    private final JobApplicationRepository jobApplicationRepository;
 
     public JobServiceImpl(
             JobRepository jobRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            JobApplicationRepository jobApplicationRepository) {
 
         this.jobRepository = jobRepository;
         this.userRepository = userRepository;
+        this.jobApplicationRepository = jobApplicationRepository;
     }
 
 
@@ -82,7 +85,7 @@ public class JobServiceImpl implements JobService {
 
     //Get All Jobs
     @Override
-    public List<JobResponse> findAllJobs(){
+    public List<JobResponse> findAllJobs() {
         return jobRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
@@ -144,8 +147,8 @@ public class JobServiceImpl implements JobService {
     //find Job By Id
     @Override
     public JobResponse findByID(Long id) {
-        Job jobData= jobRepository.findById(id).orElse(null);
-        if(jobData!=null){
+        Job jobData = jobRepository.findById(id).orElse(null);
+        if (jobData != null) {
             return mapToResponse(jobData);
         }
         return null;
@@ -312,19 +315,97 @@ public class JobServiceImpl implements JobService {
     }
 
     private JobResponse mapToResponse(Job jobs) {
-        JobResponse jobResponse=new JobResponse();
+        JobResponse jobResponse = new JobResponse();
         jobResponse.setId(jobs.getId());
         jobResponse.setTitle(jobs.getTitle());
         jobResponse.setLocation(jobs.getLocation());
         jobResponse.setDescription(jobs.getDescription());
         jobResponse.setMaxSalary(jobs.getMaxSalary());
         jobResponse.setMinSalary(jobs.getMinSalary());
-        if(jobs.getCompany()!=null){
+        if (jobs.getCompany() != null) {
             jobResponse.setCompanyId(jobs.getCompany().getId());
             jobResponse.setCompanyName(jobs.getCompany().getName());
         }
         return jobResponse;
     }
+
+    @Override
+    @Transactional
+    public Boolean applyNewJob(Long id) {
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username = authentication.getName();
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        // Step 3: Find Candidate
+        Candidate candidate = user.getCandidate();
+
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found"));
+
+        if (!jobApplicationRepository.existsByCandidateAndJob(candidate, job)) {
+            JobApplication jobApplication = new JobApplication();
+            jobApplication.setJob(job);
+            jobApplication.setCandidate(candidate);
+            jobApplication.setStatus("APPLIED");
+            jobApplication.setAppliedDate(LocalDateTime.now());
+            jobApplicationRepository.save(jobApplication);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<AppliedJobsResponse> getAllAppliedJobs() {
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username = authentication.getName();
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        // Step 3: Find Candidate
+        Candidate candidate = user.getCandidate();
+
+        return jobApplicationRepository.findByCandidate(candidate)
+                .stream()
+                .map(this::mapToAppliedJobResponse)
+                .collect(Collectors.toList());
+    }
+
+    private AppliedJobsResponse mapToAppliedJobResponse(JobApplication jobApplication) {
+
+        Job job = jobApplication.getJob();
+
+        AppliedJobsResponse appliedJobsResponse = new AppliedJobsResponse();
+
+        appliedJobsResponse.setAppliedDate(jobApplication.getAppliedDate());
+        appliedJobsResponse.setStatus(jobApplication.getStatus());
+        appliedJobsResponse.setLocation(job.getLocation());
+        appliedJobsResponse.setTitle(job.getTitle());
+        appliedJobsResponse.setCompanyName(job.getCompany().getName());
+
+        return appliedJobsResponse;
+    }
+
 
     private void updateJobByRequest(JobRequest jobRequest, Job job) {
         job.setTitle(jobRequest.getTitle());

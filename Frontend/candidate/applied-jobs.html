@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Applied Jobs - JobPortal</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+
+            <a class="navbar-brand fw-bold"
+               href="candidate-dashboard.html">
+                JobPortal
+            </a>
+
+            <div class="text-white">
+                Welcome, <span id="username"></span>
+
+                <button
+                    class="btn btn-light ms-3"
+                    onclick="logout()">
+                    Logout
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2>My Applied Jobs</h2>
+
+            <a
+                href="browse-jobs.html"
+                class="btn btn-primary">
+                Browse Jobs
+            </a>
+
+        </div>
+
+
+        <!-- Loading -->
+        <div id="loadingMessage">
+            Loading your applications...
+        </div>
+
+
+        <!-- Applications -->
+        <div id="applicationsContainer"
+             class="row g-4">
+        </div>
+
+
+        <!-- No Applications -->
+        <div
+            id="noApplications"
+            class="alert alert-info"
+            style="display: none;">
+
+            You haven't applied for any jobs yet.
+
+            <br><br>
+
+            <a
+                href="browse-jobs.html"
+                class="btn btn-primary">
+                Browse Jobs
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script src="applied-jobs.js"></script>
+
+</body>
+
+</html>

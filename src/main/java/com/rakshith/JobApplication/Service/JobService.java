@@ -1,5 +1,6 @@
 package com.rakshith.JobApplication.Service;
 
+import com.rakshith.JobApplication.DTO.AppliedJobsResponse;
 import com.rakshith.JobApplication.DTO.JobRequest;
 import com.rakshith.JobApplication.DTO.JobResponse;
 import com.rakshith.JobApplication.Entity.Job;
@@ -27,4 +28,10 @@ public interface JobService {
 
      //update job based on id
      Boolean updateJobById(JobRequest jobRequest, Long id);
+
+     //apply job based on job Id
+     Boolean applyNewJob(Long id);
+
+     //Get All the applied jobs.
+     List<AppliedJobsResponse> getAllAppliedJobs();
 }
