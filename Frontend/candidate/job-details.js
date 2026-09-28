@@ -227,10 +227,44 @@ async function applyForJob(jobId) {
 }
 
 
-function saveJob(jobId) {
+async function saveJob(jobId) {
+    const token = localStorage.getItem("token");
 
-    alert("Save Job functionality will be implemented later.");
+    if (!token) {
+        alert("Please login to save jobs.");
+        window.location.href = "login.html";
+        return;
+    }
 
+    try {
+        const response = await fetch(
+            `http://localhost:8080/jobs/${jobId}/save`,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        const message = await response.text();
+
+        if (response.ok) {
+            alert(message);
+        } else if (response.status === 409) {
+            alert("You have already saved this job.");
+        } else if (response.status === 401 || response.status === 403) {
+            alert("Session expired or you are not authorized. Please login again.");
+        } else if (response.status === 404) {
+            alert("Job not found.");
+        } else {
+            alert(message || "Unable to save job. Please try again.");
+        }
+
+    } catch (error) {
+        console.error("Error saving job:", error);
+        alert("Unable to connect to the server. Please try again.");
+    }
 }
 
 
