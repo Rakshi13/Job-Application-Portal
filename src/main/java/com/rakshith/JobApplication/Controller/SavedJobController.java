@@ -1,13 +1,17 @@
 package com.rakshith.JobApplication.Controller;
 
+import com.rakshith.JobApplication.DTO.SavedJobsResponseDto;
 import com.rakshith.JobApplication.Service.SaveJobService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class SavedJobController {
@@ -33,4 +37,17 @@ public class SavedJobController {
                     .body("Job is already saved");
         }
     }
+
+
+    @Operation(
+            summary = "Get all saved jobs",
+            description = "Retrieve all jobs saved by the logged-in candidate."
+    )
+    @GetMapping("/jobs/savedjobs")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<List<SavedJobsResponseDto>> getAllSavedJobs(){
+        return ResponseEntity.ok(saveJobService.getSavedJobs());
+    }
+
+
 }
