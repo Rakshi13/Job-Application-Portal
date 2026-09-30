@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile | JobPortal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="candidate-profile.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="home.html">
+                <i class="bi bi-briefcase-fill me-2"></i>JobPortal
+            </a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <a href="candidate-dashboard.html" class="text-white text-decoration-none">
+                    Dashboard
+                </a>
+                <span class="text-white">
+                    <i class="bi bi-person-circle me-1"></i>Candidate
+                </span>
+                <button class="btn btn-light btn-sm" onclick="logout()">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+
+        <div class="mb-4">
+            <h2 class="fw-bold">My Profile</h2>
+            <p class="text-muted">
+                Manage your personal and professional information.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Profile Summary -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 profile-summary">
+                    <div class="card-body text-center p-4">
+
+                        <div class="profile-avatar mx-auto mb-3">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <h4 id="displayName">Candidate Name</h4>
+                        <p class="text-muted mb-2" id="displayDesignation">
+                            Your Designation
+                        </p>
+
+                        <p class="text-muted small" id="displayLocation">
+                            <i class="bi bi-geo-alt me-1"></i>Location
+                        </p>
+
+                        <hr>
+
+                        <div class="text-start">
+                            <p class="fw-semibold mb-2">Profile Details</p>
+                            <p class="small mb-2">
+                                <i class="bi bi-envelope me-2"></i>
+                                <span id="displayEmail">Email</span>
+                            </p>
+                            <p class="small mb-2">
+                                <i class="bi bi-telephone me-2"></i>
+                                <span id="displayPhone">Phone</span>
+                            </p>
+                            <p class="small mb-0">
+                                <i class="bi bi-briefcase me-2"></i>
+                                <span id="displayExperience">Experience</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between
+                                align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">Personal Information</h5>
+                            <button type="button" id="editButton" class="btn btn-outline-primary btn-sm"
+                                onclick="enableEdit()">
+                                <i class="bi bi-pencil me-1"></i>Edit Profile
+                            </button>
+                        </div>
+
+                        <form id="profileForm">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName"
+                                        placeholder="Enter full name" required disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Enter email" disabled>
+                                    <div class="form-text">
+                                        Email is managed by your account.
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                                        placeholder="Enter phone number" required disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="location" name="location"
+                                        placeholder="City, State" disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        Current Designation
+                                    </label>
+                                    <input type="text" class="form-control" id="designation" name="designation"
+                                        placeholder="e.g. Java Developer" disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        Experience (Years)
+                                    </label>
+                                    <input type="number" class="form-control" id="experience" name="experience" min="0"
+                                        step="0.5" placeholder="e.g. 4" disabled>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Skills</label>
+                                    <input type="text" class="form-control" id="skills" name="skills"
+                                        placeholder="Java, Spring Boot, SQL" disabled>
+                                    <div class="form-text">
+                                        Separate each skill with a comma.
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        Professional Summary
+                                    </label>
+                                    <textarea class="form-control" id="summary" name="summary" rows="4"
+                                        placeholder="Describe your experience and career goals" disabled></textarea>
+                                </div>
+
+                                <!-- Resume -->
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">
+                                        Resume
+                                    </label>
+
+                                    <div class="resume-box p-3 rounded">
+                                        <div class="d-flex align-items-center
+                                                gap-3 flex-wrap">
+                                            <i class="bi bi-file-earmark-pdf
+                                                  resume-icon"></i>
+
+                                            <div class="flex-grow-1">
+                                                <div id="resumeName" class="fw-semibold">
+                                                    No resume uploaded
+                                                </div>
+                                                <small id="resumeInfo" class="text-muted">
+                                                    PDF, DOC or DOCX
+                                                </small>
+                                            </div>
+
+                                            <a id="resumeDownload" href="#"
+                                                class="btn btn-outline-primary btn-sm d-none" target="_blank">
+                                                <i class="bi bi-download"></i>
+                                                View
+                                            </a>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <input type="file" class="form-control" id="resume" accept=".pdf,.doc,.docx"
+                                                disabled>
+                                            <div class="form-text">
+                                                Maximum file size: 5 MB.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="mt-4 d-none" id="formActions">
+                                <button type="submit" class="btn btn-primary me-2" id="saveButton">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Save Changes
+                                </button>
+
+                                <button type="button" class="btn btn-outline-secondary" onclick="cancelEdit()">
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <div id="message" class="mt-3"></div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="candidate-profile.js"></script>
+</body>
+
+</html>
