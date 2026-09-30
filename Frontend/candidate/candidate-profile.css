@@ -1,0 +1,66 @@
+body {
+    background-color: #f4f7fb;
+    font-family: Arial, sans-serif;
+    color: #212529;
+}
+
+.profile-summary {
+    border-radius: 12px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #e7efff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-control {
+    padding: 10px 12px;
+    border-radius: 8px;
+}
+
+.form-control:disabled {
+    background-color: #f8f9fa;
+    color: #495057;
+    opacity: 1;
+}
+
+.resume-box {
+    border: 1px dashed #b8c5d8;
+    background-color: #f8faff;
+}
+
+.resume-icon {
+    font-size: 36px;
+    color: #dc3545;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .profile-summary {
+        margin-bottom: 10px;
+    }
+}
