@@ -1,309 +1,384 @@
 
-const API_URL = "http://localhost:8080";
-const PROFILE_API = `${API_URL}/candidate/profile`;
+const API_URL = "http://localhost:8080/candidate/profile";
 
-const form = document.getElementById("profileForm");
-const resumeInput = document.getElementById("resume");
-const message = document.getElementById("message");
+let currentMode = "loading";
+let savedProfile = null;
 
-let originalProfile = null;
+const loadingBox = document.getElementById("loadingBox");
+const profileContent = document.getElementById("profileContent");
+const messageBox = document.getElementById("messageBox");
 
-// Add the JWT token to secured API requests.
-function getHeaders() {
-    const token = localStorage.getItem("token");
+const viewSection = document.getElementById("viewSection");
+const formSection = document.getElementById("formSection");
+const profileForm = document.getElementById("profileForm");
 
+const formTitle = document.getElementById("formTitle");
+const formSubtitle = document.getElementById("formSubtitle");
+const saveBtn = document.getElementById("saveBtn");
+
+const editBtn = document.getElementById("editBtn");
+const viewEditBtn = document.getElementById("viewEditBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const fields = {
+    fullName: document.getElementById("fullName"),
+    email: document.getElementById("email"),
+    phoneNumber: document.getElementById("phoneNumber"),
+    location: document.getElementById("location"),
+    currentDesignation: document.getElementById("currentDesignation"),
+    experience: document.getElementById("experience"),
+    skills: document.getElementById("skills"),
+    professionalSummary: document.getElementById("professionalSummary")
+};
+
+// Get JWT token from localStorage
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+// Common fetch helper
+async function apiRequest(url, options = {}) {
+    const token = getToken();
+
+    if (!token) {
+        window.location.href = "candidate-login.html";
+        throw new Error("You are not logged in. Please log in again.");
+    }
+
+    const headers = {
+        "Authorization": `Bearer ${token}`,
+        ...options.headers
+    };
+
+    if (options.body && !(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    return fetch(url, {
+        ...options,
+        headers
+    });
+}
+
+// Show success or error message
+function showMessage(message, type = "danger") {
+    messageBox.textContent = message;
+    messageBox.className = `alert alert-${type}`;
+    messageBox.classList.remove("d-none");
+}
+
+function hideMessage() {
+    messageBox.textContent = "";
+    messageBox.className = "alert d-none";
+}
+
+function showPageContent() {
+    loadingBox.classList.add("d-none");
+    profileContent.classList.remove("d-none");
+}
+
+function setMode(mode) {
+    currentMode = mode;
+
+    viewSection.classList.add("d-none");
+    formSection.classList.add("d-none");
+    editBtn.classList.add("d-none");
+
+    if (mode === "view") {
+        viewSection.classList.remove("d-none");
+        editBtn.classList.remove("d-none");
+    } else if (mode === "create" || mode === "update") {
+        formSection.classList.remove("d-none");
+
+        if (mode === "create") {
+            formTitle.textContent = "Create Your Profile";
+            formSubtitle.textContent =
+                "Enter your personal and professional details.";
+            saveBtn.innerHTML =
+                '<i class="bi bi-check-circle me-2"></i>Create Profile';
+        } else {
+            formTitle.textContent = "Update Your Profile";
+            formSubtitle.textContent =
+                "Update your personal and professional details.";
+            saveBtn.innerHTML =
+                '<i class="bi bi-save me-2"></i>Save Changes';
+        }
+    }
+}
+
+// Safely show a value, using "-" when it is empty
+function displayValue(value) {
+    return value === null || value === undefined || value === ""
+        ? "-"
+        : String(value);
+}
+
+// Fill the profile summary and view page
+function renderProfile(profile) {
+    document.getElementById("summaryName").textContent =
+        displayValue(profile.fullName);
+
+    document.getElementById("summaryDesignation").textContent =
+        displayValue(profile.currentDesignation);
+
+    document.getElementById("summaryLocation").textContent =
+        displayValue(profile.location);
+
+    document.getElementById("summaryEmail").textContent =
+        displayValue(profile.email);
+
+    document.getElementById("summaryPhone").textContent =
+        displayValue(profile.phoneNumber);
+
+    document.getElementById("summaryExperience").textContent =
+        profile.experience === null || profile.experience === undefined
+            ? "Experience not added"
+            : `${profile.experience} years experience`;
+
+    document.getElementById("summarySkills").textContent =
+        displayValue(profile.skills);
+
+    document.getElementById("viewFullName").textContent =
+        displayValue(profile.fullName);
+
+    document.getElementById("viewEmail").textContent =
+        displayValue(profile.email);
+
+    document.getElementById("viewPhone").textContent =
+        displayValue(profile.phoneNumber);
+
+    document.getElementById("viewLocation").textContent =
+        displayValue(profile.location);
+
+    document.getElementById("viewDesignation").textContent =
+        displayValue(profile.currentDesignation);
+
+    document.getElementById("viewExperience").textContent =
+        profile.experience === null || profile.experience === undefined
+            ? "-"
+            : `${profile.experience} years`;
+
+    document.getElementById("viewSkills").textContent =
+        displayValue(profile.skills);
+
+    document.getElementById("viewSummary").textContent =
+        displayValue(profile.professionalSummary);
+}
+
+// Populate the form for updating
+function fillForm(profile) {
+    fields.fullName.value = profile.fullName ?? "";
+    fields.email.value = profile.email ?? "";
+    fields.phoneNumber.value = profile.phoneNumber ?? "";
+    fields.location.value = profile.location ?? "";
+    fields.currentDesignation.value = profile.currentDesignation ?? "";
+    fields.experience.value = profile.experience ?? "";
+    fields.skills.value = profile.skills ?? "";
+    fields.professionalSummary.value = profile.professionalSummary ?? "";
+}
+
+// Clear the form for creating a profile
+function clearForm() {
+    profileForm.reset();
+}
+
+// Build request body matching CandidateProfileRequestDto
+function getRequestBody() {
     return {
-        "Authorization": `Bearer ${token}`
+        fullName: fields.fullName.value.trim(),
+        email: fields.email.value.trim(),
+        phoneNumber: fields.phoneNumber.value.trim(),
+        location: fields.location.value.trim(),
+        currentDesignation: fields.currentDesignation.value.trim(),
+        experience: fields.experience.value === ""
+            ? null
+            : Number(fields.experience.value),
+        skills: fields.skills.value.trim(),
+        professionalSummary: fields.professionalSummary.value.trim()
     };
 }
 
-// Load candidate profile when the page opens.
-document.addEventListener("DOMContentLoaded", loadProfile);
-
+// Load candidate profile
 async function loadProfile() {
+    hideMessage();
+    loadingBox.classList.remove("d-none");
+    profileContent.classList.add("d-none");
+
     try {
-        const response = await fetch(PROFILE_API, {
-            method: "GET",
-            headers: getHeaders()
+        const response = await apiRequest(API_URL, {
+            method: "GET"
         });
 
-        if (!response.ok) {
-            throw new Error("Unable to load candidate profile.");
+        if (response.status === 404) {
+            savedProfile = null;
+            clearForm();
+            showPageContent();
+            setMode("create");
+            return;
         }
 
-        const profile = await response.json();
+        if (response.status === 401) {
+            throw new Error("Your session has expired. Please log in again.");
+        }
 
-        originalProfile = profile;
-        populateForm(profile);
-        updateSummary(profile);
+        if (response.status === 403) {
+            throw new Error(
+                "You are not authorized to access this profile. " +
+                "Please check your candidate role and JWT authorities."
+            );
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Unable to load your profile.");
+        }
+
+        savedProfile = await response.json();
+
+        renderProfile(savedProfile);
+        showPageContent();
+        setMode("view");
 
     } catch (error) {
-        showMessage(error.message, "danger");
+        loadingBox.classList.add("d-none");
+        profileContent.classList.add("d-none");
+        showMessage(error.message || "Something went wrong.");
+        console.error("Profile loading error:", error);
     }
 }
 
-// Populate the form with backend data.
-function populateForm(profile) {
-    document.getElementById("fullName").value =
-        profile.fullName || "";
+// Open edit mode
+function openEditMode() {
+    if (!savedProfile) {
+        return;
+    }
 
-    document.getElementById("email").value =
-        profile.email || "";
+    hideMessage();
+    fillForm(savedProfile);
+    setMode("update");
+}
 
-    document.getElementById("phoneNumber").value =
-        profile.phoneNumber || "";
+// Cancel create or update
+function cancelForm() {
+    hideMessage();
 
-    document.getElementById("location").value =
-        profile.location || "";
-
-    document.getElementById("designation").value =
-        profile.designation || "";
-
-    document.getElementById("experience").value =
-        profile.experience ?? "";
-
-    document.getElementById("skills").value =
-        Array.isArray(profile.skills)
-            ? profile.skills.join(", ")
-            : (profile.skills || "");
-
-    document.getElementById("summary").value =
-        profile.summary || "";
-
-    document.getElementById("resumeName").textContent =
-        profile.resumeFileName || "No resume uploaded";
-
-    document.getElementById("resumeInfo").textContent =
-        profile.resumeFileSize
-            ? `${(profile.resumeFileSize / 1024).toFixed(1)} KB`
-            : "PDF, DOC or DOCX";
-
-    const downloadLink =
-        document.getElementById("resumeDownload");
-
-    if (profile.resumeDownloadUrl) {
-        downloadLink.href = profile.resumeDownloadUrl;
-        downloadLink.classList.remove("d-none");
+    if (currentMode === "update" && savedProfile) {
+        fillForm(savedProfile);
+        setMode("view");
     } else {
-        downloadLink.classList.add("d-none");
+        clearForm();
+        setMode("create");
     }
 }
 
-// Update the profile summary card.
-function updateSummary(profile) {
-    document.getElementById("displayName").textContent =
-        profile.fullName || "Candidate Name";
+// Create or update profile
+async function saveProfile(event) {
+    event.preventDefault();
+    hideMessage();
 
-    document.getElementById("displayEmail").textContent =
-        profile.email || "Not provided";
-
-    document.getElementById("displayPhone").textContent =
-        profile.phoneNumber || "Not provided";
-
-    document.getElementById("displayLocation").innerHTML =
-        `<i class="bi bi-geo-alt me-1"></i>${escapeHTML(profile.location || "Location not provided")
-        }`;
-
-    document.getElementById("displayDesignation").textContent =
-        profile.designation || "Designation not provided";
-
-    document.getElementById("displayExperience").textContent =
-        profile.experience != null
-            ? `${profile.experience} years experience`
-            : "Experience not provided";
-}
-
-// Prevent HTML injection when showing user-provided text.
-function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    })[char]);
-}
-
-// Enable editing.
-function enableEdit() {
-    document.querySelectorAll(
-        "#profileForm input:not([type=file]), #profileForm textarea"
-    ).forEach(input => {
-        if (input.id !== "email") {
-            input.disabled = false;
-        }
-    });
-
-    resumeInput.disabled = false;
-
-    document.getElementById("formActions")
-        .classList.remove("d-none");
-
-    document.getElementById("editButton")
-        .classList.add("d-none");
-}
-
-// Disable editing.
-function disableEdit() {
-    document.querySelectorAll(
-        "#profileForm input, #profileForm textarea"
-    ).forEach(input => input.disabled = true);
-
-    document.getElementById("formActions")
-        .classList.add("d-none");
-
-    document.getElementById("editButton")
-        .classList.remove("d-none");
-}
-
-// Cancel changes and restore original data.
-function cancelEdit() {
-    if (originalProfile) {
-        populateForm(originalProfile);
-        updateSummary(originalProfile);
+    if (!profileForm.reportValidity()) {
+        return;
     }
 
-    form.reset();
-    if (originalProfile) {
-        populateForm(originalProfile);
+    const isCreate = currentMode === "create";
+
+    if (!isCreate && currentMode !== "update") {
+        return;
     }
 
-    resumeInput.value = "";
-    message.innerHTML = "";
-    disableEdit();
-}
-
-// Validate selected resume.
-resumeInput.addEventListener("change", function () {
-    const file = this.files[0];
-
-    if (!file) return;
-
-    const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-    const allowedExtensions = /\.(pdf|doc|docx)$/i;
+    const requestBody = getRequestBody();
 
     if (
-        !allowedTypes.includes(file.type) ||
-        !allowedExtensions.test(file.name)
+        requestBody.experience === null ||
+        !Number.isInteger(requestBody.experience) ||
+        requestBody.experience < 0
     ) {
-        showMessage(
-            "Please upload a PDF, DOC or DOCX file.",
-            "danger"
-        );
-        this.value = "";
+        showMessage("Please enter a valid experience in whole years.");
         return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-        showMessage(
-            "Resume size should not exceed 5 MB.",
-            "danger"
-        );
-        this.value = "";
-        return;
-    }
-
-    document.getElementById("resumeName").textContent =
-        file.name;
-
-    document.getElementById("resumeInfo").textContent =
-        `${(file.size / 1024).toFixed(1)} KB`;
-});
-
-// Submit profile changes.
-form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const saveButton = document.getElementById("saveButton");
-    saveButton.disabled = true;
-    saveButton.textContent = "Saving...";
+    saveBtn.disabled = true;
+    saveBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
 
     try {
-        const profileData = {
-            fullName: document.getElementById("fullName").value.trim(),
-            phoneNumber: document.getElementById("phoneNumber").value.trim(),
-            location: document.getElementById("location").value.trim(),
-            designation: document.getElementById("designation").value.trim(),
-            experience: document.getElementById("experience").value === ""
-                ? null
-                : Number(document.getElementById("experience").value),
-            skills: document.getElementById("skills").value
-                .split(",")
-                .map(skill => skill.trim())
-                .filter(Boolean),
-            summary: document.getElementById("summary").value.trim()
-        };
-
-        // 1. Update profile information.
-        const response = await fetch(PROFILE_API, {
-            method: "PUT",
-            headers: {
-                ...getHeaders(),
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(profileData)
+        const response = await apiRequest(API_URL, {
+            method: isCreate ? "POST" : "PUT",
+            body: JSON.stringify(requestBody)
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to update profile.");
+        const responseText = await response.text();
+
+        if (response.status === 401) {
+            throw new Error("Your session has expired. Please log in again.");
         }
 
-        // 2. Upload resume separately, if selected.
-        const resumeFile = resumeInput.files[0];
-
-        if (resumeFile) {
-            const formData = new FormData();
-            formData.append("file", resumeFile);
-
-            const resumeResponse = await fetch(
-                `${PROFILE_API}/resume`,
-                {
-                    method: "POST",
-                    headers: getHeaders(),
-                    body: formData
-                }
+        if (response.status === 403) {
+            throw new Error(
+                "You are not authorized to save this profile. " +
+                "Please check your candidate role."
             );
-
-            if (!resumeResponse.ok) {
-                throw new Error(
-                    "Profile updated, but resume upload failed."
-                );
-            }
         }
 
-        showMessage("Profile updated successfully!", "success");
+        if (response.status === 409) {
+            throw new Error(
+                responseText || "A candidate profile already exists."
+            );
+        }
 
-        await loadProfile();
-        resumeInput.value = "";
-        disableEdit();
+        if (!response.ok) {
+            throw new Error(
+                responseText || "Unable to save your profile."
+            );
+        }
+
+        showMessage(
+            isCreate
+                ? "Candidate profile created successfully."
+                : "Candidate profile updated successfully.",
+            "success"
+        );
+
+        // Reload saved details after a successful save
+        //await loadProfile();
+
+        // Keep a success message visible after the reload
+        showMessage(
+            isCreate
+                ? "Candidate profile created successfully."
+                : "Candidate profile updated successfully.",
+            "success"
+        );
 
     } catch (error) {
-        showMessage(error.message, "danger");
+        showMessage(error.message || "Something went wrong.");
+        console.error("Profile save error:", error);
     } finally {
-        saveButton.disabled = false;
-        saveButton.innerHTML =
-            '<i class="bi bi-check-circle me-1"></i>Save Changes';
+        saveBtn.disabled = false;
+
+        if (currentMode === "create") {
+            saveBtn.innerHTML =
+                '<i class="bi bi-check-circle me-2"></i>Create Profile';
+        } else {
+            saveBtn.innerHTML =
+                '<i class="bi bi-save me-2"></i>Save Changes';
+        }
     }
-});
-
-// Display success and error messages.
-function showMessage(text, type) {
-    message.innerHTML = "";
-
-    const alert = document.createElement("div");
-    alert.className = `alert alert-${type}`;
-    alert.textContent = text;
-
-    message.appendChild(alert);
 }
 
-// Logout.
+// Logout
 function logout() {
     localStorage.removeItem("token");
-    window.location.href = "login.html";
+    window.location.href = "candidate-login.html";
 }
+
+// Event listeners
+editBtn.addEventListener("click", openEditMode);
+viewEditBtn.addEventListener("click", openEditMode);
+cancelBtn.addEventListener("click", cancelForm);
+profileForm.addEventListener("submit", saveProfile);
+logoutBtn.addEventListener("click", logout);
+
+// Initial page load
+//loadProfile();
