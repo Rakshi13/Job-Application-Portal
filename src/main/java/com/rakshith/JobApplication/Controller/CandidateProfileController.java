@@ -1,15 +1,19 @@
 package com.rakshith.JobApplication.Controller;
 
 import com.rakshith.JobApplication.DTO.CandidateProfileRequestDto;
+import com.rakshith.JobApplication.DTO.CandidateProfileResponseDto;
 import com.rakshith.JobApplication.Service.CandidateProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class CandidateProfileController {
@@ -37,4 +41,15 @@ public class CandidateProfileController {
                     .body("Candidate profile already exists.");
         }
     }
+
+    @Operation(
+            summary = "Get the Information of Candidate Profile.",
+            description = "Get the Candidate Profile Data."
+    )
+    @GetMapping("/candidate/profile")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<CandidateProfileResponseDto> getCandidateProfile(){
+        return ResponseEntity.ok(candidateProfileService.getCandidateprofileData());
+    }
+
 }
