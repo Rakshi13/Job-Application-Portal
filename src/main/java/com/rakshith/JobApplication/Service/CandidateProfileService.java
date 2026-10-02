@@ -13,4 +13,7 @@ public interface CandidateProfileService {
 
     //Get the details of candidate profile.
     CandidateProfileResponseDto getCandidateprofileData();
+
+    //Edit the candidate profile.
+    void editCandidateProfile(CandidateProfileRequestDto candidateProfileRequestDto);
 }
