@@ -1,4 +1,3 @@
-
 const API_URL = "http://localhost:8080/candidate/profile";
 
 let currentMode = "loading";
@@ -24,7 +23,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const fields = {
     fullName: document.getElementById("fullName"),
     email: document.getElementById("email"),
-    phoneNumber: document.getElementById("phoneNumber"),
+    phoneNo: document.getElementById("phoneNumber"),
     location: document.getElementById("location"),
     currentDesignation: document.getElementById("currentDesignation"),
     experience: document.getElementById("experience"),
@@ -32,26 +31,26 @@ const fields = {
     professionalSummary: document.getElementById("professionalSummary")
 };
 
-// Get JWT token from localStorage
+// Get JWT token
 function getToken() {
     return localStorage.getItem("token");
 }
 
-// Common fetch helper
+// Common API request
 async function apiRequest(url, options = {}) {
     const token = getToken();
 
     if (!token) {
         window.location.href = "candidate-login.html";
-        throw new Error("You are not logged in. Please log in again.");
+        throw new Error("Please log in to continue.");
     }
 
     const headers = {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         ...options.headers
     };
 
-    if (options.body && !(options.body instanceof FormData)) {
+    if (options.body) {
         headers["Content-Type"] = "application/json";
     }
 
@@ -61,7 +60,7 @@ async function apiRequest(url, options = {}) {
     });
 }
 
-// Show success or error message
+// Display messages
 function showMessage(message, type = "danger") {
     messageBox.textContent = message;
     messageBox.className = `alert alert-${type}`;
@@ -73,11 +72,13 @@ function hideMessage() {
     messageBox.className = "alert d-none";
 }
 
+// Show main profile area
 function showPageContent() {
     loadingBox.classList.add("d-none");
     profileContent.classList.remove("d-none");
 }
 
+// Switch between view, create and update modes
 function setMode(mode) {
     currentMode = mode;
 
@@ -88,33 +89,37 @@ function setMode(mode) {
     if (mode === "view") {
         viewSection.classList.remove("d-none");
         editBtn.classList.remove("d-none");
-    } else if (mode === "create" || mode === "update") {
+    }
+
+    if (mode === "create" || mode === "update") {
         formSection.classList.remove("d-none");
 
         if (mode === "create") {
             formTitle.textContent = "Create Your Profile";
             formSubtitle.textContent =
                 "Enter your personal and professional details.";
+
             saveBtn.innerHTML =
                 '<i class="bi bi-check-circle me-2"></i>Create Profile';
         } else {
             formTitle.textContent = "Update Your Profile";
             formSubtitle.textContent =
                 "Update your personal and professional details.";
+
             saveBtn.innerHTML =
                 '<i class="bi bi-save me-2"></i>Save Changes';
         }
     }
 }
 
-// Safely show a value, using "-" when it is empty
+// Display empty values safely
 function displayValue(value) {
     return value === null || value === undefined || value === ""
         ? "-"
         : String(value);
 }
 
-// Fill the profile summary and view page
+// Render saved profile in view mode
 function renderProfile(profile) {
     document.getElementById("summaryName").textContent =
         displayValue(profile.fullName);
@@ -129,15 +134,12 @@ function renderProfile(profile) {
         displayValue(profile.email);
 
     document.getElementById("summaryPhone").textContent =
-        displayValue(profile.phoneNumber);
+        displayValue(profile.phoneNo);
 
     document.getElementById("summaryExperience").textContent =
-        profile.experience === null || profile.experience === undefined
+        profile.experience == null
             ? "Experience not added"
             : `${profile.experience} years experience`;
-
-    document.getElementById("summarySkills").textContent =
-        displayValue(profile.skills);
 
     document.getElementById("viewFullName").textContent =
         displayValue(profile.fullName);
@@ -146,7 +148,7 @@ function renderProfile(profile) {
         displayValue(profile.email);
 
     document.getElementById("viewPhone").textContent =
-        displayValue(profile.phoneNumber);
+        displayValue(profile.phoneNo);
 
     document.getElementById("viewLocation").textContent =
         displayValue(profile.location);
@@ -155,7 +157,7 @@ function renderProfile(profile) {
         displayValue(profile.currentDesignation);
 
     document.getElementById("viewExperience").textContent =
-        profile.experience === null || profile.experience === undefined
+        profile.experience == null
             ? "-"
             : `${profile.experience} years`;
 
@@ -166,36 +168,39 @@ function renderProfile(profile) {
         displayValue(profile.professionalSummary);
 }
 
-// Populate the form for updating
+// Fill form with existing profile data
 function fillForm(profile) {
     fields.fullName.value = profile.fullName ?? "";
     fields.email.value = profile.email ?? "";
-    fields.phoneNumber.value = profile.phoneNumber ?? "";
+    fields.phoneNo.value = profile.phoneNo ?? "";
     fields.location.value = profile.location ?? "";
-    fields.currentDesignation.value = profile.currentDesignation ?? "";
+    fields.currentDesignation.value =
+        profile.currentDesignation ?? "";
     fields.experience.value = profile.experience ?? "";
     fields.skills.value = profile.skills ?? "";
-    fields.professionalSummary.value = profile.professionalSummary ?? "";
+    fields.professionalSummary.value =
+        profile.professionalSummary ?? "";
 }
 
-// Clear the form for creating a profile
+// Clear form for first-time profile creation
 function clearForm() {
     profileForm.reset();
 }
 
-// Build request body matching CandidateProfileRequestDto
+// Create request body matching CandidateProfileRequestDto
 function getRequestBody() {
     return {
         fullName: fields.fullName.value.trim(),
         email: fields.email.value.trim(),
-        phoneNumber: fields.phoneNumber.value.trim(),
+        phoneNo: fields.phoneNo.value.trim(),
         location: fields.location.value.trim(),
         currentDesignation: fields.currentDesignation.value.trim(),
         experience: fields.experience.value === ""
             ? null
             : Number(fields.experience.value),
         skills: fields.skills.value.trim(),
-        professionalSummary: fields.professionalSummary.value.trim()
+        professionalSummary:
+            fields.professionalSummary.value.trim()
     };
 }
 
@@ -210,6 +215,7 @@ async function loadProfile() {
             method: "GET"
         });
 
+        // Candidate has not created a profile yet
         if (response.status === 404) {
             savedProfile = null;
             clearForm();
@@ -219,19 +225,20 @@ async function loadProfile() {
         }
 
         if (response.status === 401) {
-            throw new Error("Your session has expired. Please log in again.");
+            localStorage.removeItem("token");
+            window.location.href = "candidate-login.html";
+            return;
         }
 
         if (response.status === 403) {
             throw new Error(
                 "You are not authorized to access this profile. " +
-                "Please check your candidate role and JWT authorities."
+                "Please check your candidate role."
             );
         }
 
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Unable to load your profile.");
+            throw new Error("Unable to load your profile.");
         }
 
         savedProfile = await response.json();
@@ -243,6 +250,7 @@ async function loadProfile() {
     } catch (error) {
         loadingBox.classList.add("d-none");
         profileContent.classList.add("d-none");
+
         showMessage(error.message || "Something went wrong.");
         console.error("Profile loading error:", error);
     }
@@ -259,7 +267,7 @@ function openEditMode() {
     setMode("update");
 }
 
-// Cancel create or update
+// Cancel form changes
 function cancelForm() {
     hideMessage();
 
@@ -294,7 +302,7 @@ async function saveProfile(event) {
         !Number.isInteger(requestBody.experience) ||
         requestBody.experience < 0
     ) {
-        showMessage("Please enter a valid experience in whole years.");
+        showMessage("Please enter valid experience in whole years.");
         return;
     }
 
@@ -311,19 +319,20 @@ async function saveProfile(event) {
         const responseText = await response.text();
 
         if (response.status === 401) {
-            throw new Error("Your session has expired. Please log in again.");
+            localStorage.removeItem("token");
+            window.location.href = "candidate-login.html";
+            return;
         }
 
         if (response.status === 403) {
             throw new Error(
-                "You are not authorized to save this profile. " +
-                "Please check your candidate role."
+                "You are not authorized to save this profile."
             );
         }
 
         if (response.status === 409) {
             throw new Error(
-                responseText || "A candidate profile already exists."
+                responseText || "Candidate profile already exists."
             );
         }
 
@@ -333,17 +342,9 @@ async function saveProfile(event) {
             );
         }
 
-        showMessage(
-            isCreate
-                ? "Candidate profile created successfully."
-                : "Candidate profile updated successfully.",
-            "success"
-        );
+        // Refresh saved data after a successful save
+        await loadProfile();
 
-        // Reload saved details after a successful save
-        //await loadProfile();
-
-        // Keep a success message visible after the reload
         showMessage(
             isCreate
                 ? "Candidate profile created successfully."
@@ -380,5 +381,5 @@ cancelBtn.addEventListener("click", cancelForm);
 profileForm.addEventListener("submit", saveProfile);
 logoutBtn.addEventListener("click", logout);
 
-// Initial page load
-//loadProfile();
+// Initial load
+loadProfile();

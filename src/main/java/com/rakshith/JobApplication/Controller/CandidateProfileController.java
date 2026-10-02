@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,13 +27,13 @@ public class CandidateProfileController {
     )
     @PostMapping("/candidate/profile")
     @PreAuthorize("hasRole('CANDIDATE')")
-    public ResponseEntity<String> addCandidateProfile(@Valid @RequestBody CandidateProfileRequestDto candidateProfileRequestDto){
-        Boolean isAdded=candidateProfileService.addCandidateProfile(candidateProfileRequestDto);
+    public ResponseEntity<String> addCandidateProfile(@Valid @RequestBody CandidateProfileRequestDto candidateProfileRequestDto) {
+        Boolean isAdded = candidateProfileService.addCandidateProfile(candidateProfileRequestDto);
 
-        if(isAdded){
+        if (isAdded) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Candidate profile created successfully");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Candidate profile already exists.");
         }
@@ -48,8 +45,21 @@ public class CandidateProfileController {
     )
     @GetMapping("/candidate/profile")
     @PreAuthorize("hasRole('CANDIDATE')")
-    public ResponseEntity<CandidateProfileResponseDto> getCandidateProfile(){
+    public ResponseEntity<CandidateProfileResponseDto> getCandidateProfile() {
         return ResponseEntity.ok(candidateProfileService.getCandidateprofileData());
+    }
+
+
+    @Operation(
+            summary = "Update the candidate profile",
+            description = "Update the logged-in candidate's profile data."
+    )
+    @PutMapping("candidate/profile")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<String> editCandidateProfileData(@Valid @RequestBody CandidateProfileRequestDto candidateProfileRequestDto) {
+        candidateProfileService.editCandidateProfile(candidateProfileRequestDto);
+
+        return ResponseEntity.ok("Profile updated successfully.");
     }
 
 }

@@ -23,7 +23,7 @@ body {
     font-weight: 500;
 }
 
-/* Page */
+/* Main page */
 .profile-container {
     padding-top: 48px;
     padding-bottom: 60px;
@@ -103,16 +103,15 @@ body {
 }
 
 .summary-location i {
-    color: #6c757d;
     margin-right: 5px;
 }
 
+/* Profile summary */
 .profile-card hr {
     margin: 24px 0 20px;
     border-color: #ced4da;
 }
 
-/* Summary details */
 .summary-detail {
     display: flex;
     align-items: flex-start;
@@ -133,7 +132,7 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* Form card */
+/* Right card heading */
 .section-heading {
     display: flex;
     justify-content: space-between;
@@ -149,11 +148,16 @@ body {
 }
 
 .section-heading p {
-    color: #6c757d;
     margin-bottom: 0;
 }
 
 /* Form */
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
 .form-label {
     font-size: 1rem;
     font-weight: 500;
@@ -302,10 +306,6 @@ textarea.form-control {
 
     .form-actions .btn {
         width: 100%;
-    }
-
-    .navbar .container {
-        gap: 8px;
     }
 
     .navbar .nav-link {

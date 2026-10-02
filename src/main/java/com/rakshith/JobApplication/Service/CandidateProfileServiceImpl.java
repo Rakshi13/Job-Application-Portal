@@ -107,6 +107,53 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return mapCandidateResponse(candidateProfile);
     }
 
+    @Override
+    @Transactional
+    public void editCandidateProfile(CandidateProfileRequestDto profileRequestDto) {
+        // Step 1: Get logged-in user
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String username = authentication.getName();
+
+        // Step 2: Find User
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        // Step 3: Find Candidate
+        Candidate candidate = user.getCandidate();
+
+        if (candidate == null) {
+            throw new IllegalStateException("No Candidate Found.");
+        }
+
+        // Step 4: Find existing Candidate Profile
+        CandidateProfile profile = candidateProfileRepository
+                .findByCandidate_Id(candidate.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Candidate profile not found"));
+
+        // Step 5: Update existing profile fields
+        profile.setFullName(profileRequestDto.getFullName());
+        profile.setEmail(profileRequestDto.getEmail());
+        profile.setPhoneNo(profileRequestDto.getPhoneNo());
+        profile.setLocation(profileRequestDto.getLocation());
+        profile.setSkills(profileRequestDto.getSkills());
+        profile.setExperience(profileRequestDto.getExperience());
+        profile.setCurrentDesignation(
+                profileRequestDto.getCurrentDesignation());
+        profile.setProfessionalSummary(
+                profileRequestDto.getProfessionalSummary());
+
+        // Step 6: Save updated profile
+        candidateProfileRepository.save(profile);
+    }
+
     public CandidateProfileResponseDto mapCandidateResponse(CandidateProfile profile){
         CandidateProfileResponseDto responseDto=new CandidateProfileResponseDto();
         responseDto.setEmail(profile.getEmail());
@@ -121,6 +168,4 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return responseDto;
 
     }
-
-
 }
