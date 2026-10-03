@@ -1,0 +1,188 @@
+/* Resume management card */
+.resume-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 6px 24px rgba(25, 42, 70, 0.07);
+}
+
+/* Header */
+.resume-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.resume-icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background-color: #e8f0ff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+}
+
+.resume-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* Resume status */
+.resume-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6c757d;
+    padding: 14px 0;
+}
+
+/* Existing resume */
+.resume-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px;
+    border: 1px solid #dce3ed;
+    border-radius: 12px;
+    background-color: #f8faff;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.file-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background-color: #ffebeb;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.file-text {
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.resume-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* No resume state */
+.no-resume {
+    padding: 28px 16px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    background-color: #f8faff;
+    color: #6c757d;
+}
+
+.no-resume i {
+    display: block;
+    font-size: 2.5rem;
+    color: #0d6efd;
+    margin-bottom: 10px;
+}
+
+/* Upload form */
+#resumeUploadForm {
+    padding-top: 4px;
+}
+
+#resumeFile {
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 9px;
+}
+
+.selected-file-name {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background-color: #eaf3ff;
+    border-radius: 8px;
+    color: #084298;
+    overflow-wrap: anywhere;
+}
+
+.upload-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Buttons */
+.resume-card .btn {
+    border-radius: 9px;
+    padding: 10px 16px;
+    font-weight: 500;
+}
+
+.resume-card .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .resume-card {
+        padding: 22px;
+    }
+
+    .resume-details {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .resume-actions {
+        width: 100%;
+    }
+
+    .resume-actions .btn {
+        flex: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .resume-card {
+        padding: 18px;
+    }
+
+    .resume-header {
+        align-items: flex-start;
+    }
+
+    .resume-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .upload-actions {
+        justify-content: stretch;
+    }
+
+    .upload-actions .btn {
+        width: 100%;
+    }
+}
