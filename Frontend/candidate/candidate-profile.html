@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="candidate-profile.css">
+    <link rel="stylesheet" href="candidate-resume.css">
 </head>
 
 <body>
@@ -91,7 +92,8 @@
                         <span id="summaryExperience">Experience</span>
                     </div>
 
-                    <button id="editBtn" class="btn btn-primary w-100 mt-4 d-none" type="button" href="edit-candidate-profile.html">
+                    <button id="editBtn" class="btn btn-primary w-100 mt-4 d-none" type="button"
+                        href="edit-candidate-profile.html">
                         <i class="bi bi-pencil-square me-2"></i>Edit Profile
                     </button>
                 </div>
@@ -154,7 +156,8 @@
                         </div>
 
                         <div class="form-actions">
-                            <button id="viewEditBtn" class="btn btn-primary" type="button" href="edit-candidate-profile.html">
+                            <button id="viewEditBtn" class="btn btn-primary" type="button"
+                                href="edit-candidate-profile.html">
                                 <i class="bi bi-pencil-square me-2"></i>Edit Profile
                             </button>
                         </div>
@@ -252,6 +255,90 @@
                                 </div>
                             </div>
 
+                            <!-- Resume Management -->
+                            <section class="resume-card mt-4">
+                                <div class="resume-header">
+                                    <div class="resume-icon">
+                                        <i class="bi bi-file-earmark-person"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3>My Resume</h3>
+                                        <p class="text-secondary mb-0">
+                                            Upload and manage your latest resume.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Resume status -->
+                                <!-- <div id="resumeStatus" class="resume-status">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    <span>Checking resume...</span>
+                                </div> -->
+
+                                <!-- Existing resume details -->
+                                <div id="resumeDetails" class="resume-details d-none">
+                                    <div class="file-info">
+                                        <div class="file-icon">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </div>
+
+                                        <div class="file-text">
+                                            <div id="resumeFileName" class="file-name">
+                                                Resume.pdf
+                                            </div>
+                                            <small id="resumeFileSize" class="text-secondary"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="resume-actions">
+                                        <button type="button" id="downloadResumeBtn" class="btn btn-outline-primary">
+                                            <i class="bi bi-download me-2"></i>Download
+                                        </button>
+
+                                        <button type="button" id="deleteResumeBtn" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash me-2"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- No resume state -->
+                                <div id="noResume" class="no-resume d-none">
+                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                    <p class="mb-0">You haven't uploaded a resume yet.</p>
+                                </div>
+
+                                <hr>
+
+                                <!-- Upload form -->
+                                <form id="resumeUploadForm">
+                                    <label for="resumeFile" class="form-label fw-semibold">
+                                        Select Resume
+                                    </label>
+
+                                    <input type="file" class="form-control" id="resumeFile"
+                                        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        required>
+
+                                    <div class="form-text">
+                                        Supported formats: PDF, DOC, DOCX. Maximum size: 5 MB.
+                                        Uploading a new file will replace your existing resume.
+                                    </div>
+
+                                    <div id="selectedFileName" class="selected-file-name d-none"></div>
+
+                                    <div class="upload-actions">
+                                        <button type="submit" id="uploadResumeBtn" class="btn btn-primary">
+                                            <i class="bi bi-cloud-arrow-up me-2"></i>
+                                            Upload Resume
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Feedback -->
+                                <div id="resumeMessage" class="alert d-none mt-3" role="alert"></div>
+                            </section>
+
                             <div class="form-actions">
                                 <button id="cancelBtn" class="btn btn-outline-secondary" type="button">
                                     Cancel
@@ -271,6 +358,7 @@
     </main>
 
     <script src="candidate-profile.js"></script>
+    <!-- <script src="candidate-resume.js"></script> -->
 </body>
 
 </html>
