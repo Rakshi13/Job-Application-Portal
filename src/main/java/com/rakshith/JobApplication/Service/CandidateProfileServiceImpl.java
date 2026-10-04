@@ -11,21 +11,22 @@ import com.rakshith.JobApplication.Repository.UserRepository;
 import com.rakshith.JobApplication.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CandidateProfileServiceImpl implements CandidateProfileService {
@@ -296,7 +297,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     }
 
     // Extract file extension
-    private String getFileExtension(String fileName) {
+    public String getFileExtension(String fileName) {
 
         if (fileName == null || fileName.isBlank()) {
             throw new IllegalArgumentException(
@@ -316,6 +317,73 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .toLowerCase(Locale.ROOT);
     }
 
+    @Override
+    @Transactional
+    public CandidateProfileService.ResumeDownload downloadResume() throws IOException {
+
+        // Step 1: Get the logged-in user's username
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        // Step 2: Find the logged-in user
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        // Step 3: Get the candidate
+        Candidate candidate = user.getCandidate();
+
+        if (candidate == null) {
+            throw new ResourceNotFoundException("Candidate not found");
+        }
+
+        // Step 4: Find the candidate's profile
+        CandidateProfile profile = candidateProfileRepository
+                .findByCandidate_Id(candidate.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Candidate profile not found"));
+
+        // Step 5: Get the resume storage key
+        String storageKey = profile.getResumeStorageKey();
+
+        if (storageKey == null || storageKey.isBlank()) {
+            throw new ResourceNotFoundException("No resume uploaded");
+        }
+
+        // Step 6: Build the resume file path
+        Path uploadPath = Paths.get(resumeUploadDir)
+                .toAbsolutePath()
+                .normalize();
+
+        Path filePath = uploadPath.resolve(storageKey)
+                .normalize();
+
+        // Step 7: Validate the path
+        if (!filePath.startsWith(uploadPath)) {
+            throw new IllegalArgumentException("Invalid resume storage key");
+        }
+
+        // Step 8: Check whether the file exists
+        if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
+            throw new FileNotFoundException("Resume file not found");
+        }
+
+        // Step 9: Convert file path into Resource
+        Resource resource = (Resource) new UrlResource(filePath.toUri());
+
+        // Step 10: Return the file and its metadata
+        return new CandidateProfileService.ResumeDownload(
+                (Resource) resource,
+                profile.getResumeFileName(),
+                profile.getResumeContentType()
+        );
+    }
+
+
+
     public CandidateProfileResponseDto mapCandidateResponse(CandidateProfile profile){
         CandidateProfileResponseDto responseDto=new CandidateProfileResponseDto();
         responseDto.setEmail(profile.getEmail());
@@ -326,6 +394,16 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         responseDto.setCurrentDesignation(profile.getCurrentDesignation());
         responseDto.setProfessionalSummary(profile.getProfessionalSummary());
         responseDto.setFullName(profile.getFullName());
+
+        // Resume details
+        responseDto.setResumeFileName(profile.getResumeFileName());
+        responseDto.setResumeFileSize(profile.getResumeFileSize());
+        responseDto.setResumeContentType(profile.getResumeContentType());
+
+        responseDto.setResumeUploaded(
+                profile.getResumeStorageKey() != null
+                        && !profile.getResumeStorageKey().isBlank()
+        );
 
         return responseDto;
 

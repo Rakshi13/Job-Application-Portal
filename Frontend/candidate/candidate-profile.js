@@ -2,6 +2,9 @@ const API_URL = "http://localhost:8080/candidate/profile";
 
 let currentMode = "loading";
 let savedProfile = null;
+let resumeUploadedForCurrentSelection = false;
+
+const resumeFileInput = document.getElementById("resumeFile");
 
 const loadingBox = document.getElementById("loadingBox");
 const profileContent = document.getElementById("profileContent");
@@ -247,6 +250,9 @@ async function loadProfile() {
         showPageContent();
         setMode("view");
 
+        // Display resume information.
+        displayResume(savedProfile);
+
     } catch (error) {
         loadingBox.classList.add("d-none");
         profileContent.classList.add("d-none");
@@ -284,6 +290,17 @@ function cancelForm() {
 async function saveProfile(event) {
     event.preventDefault();
     hideMessage();
+
+    if (resumeFileInput.files.length > 0 && !resumeUploadedForCurrentSelection) {
+        const confirmSave = confirm(
+            "You selected a resume but haven't uploaded it. " +
+            "Do you want to save your profile without uploading this resume?"
+        );
+
+        if (!confirmSave) {
+            return;
+        }
+    }
 
     if (!profileForm.reportValidity()) {
         return;
@@ -344,6 +361,8 @@ async function saveProfile(event) {
 
         // Refresh saved data after a successful save
         await loadProfile();
+        resumeFileInput.value = "";
+        resumeUploadedForCurrentSelection = false;
 
         showMessage(
             isCreate
@@ -368,6 +387,128 @@ async function saveProfile(event) {
     }
 }
 
+async function uploadResume() {
+    const fileInput = document.getElementById("resumeFile");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a resume first.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch(
+            "http://localhost:8080/candidate/profile/resume",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            }
+        );
+
+        const message = await response.text();
+
+        if (!response.ok) {
+            throw new Error(message || "Resume upload failed");
+        }
+
+        resumeUploadedForCurrentSelection = true;
+        alert(message);
+        showMessage("Resume uploaded successfully!", "success");
+
+        resumeFileInput.value = "";
+        resumeUploadedForCurrentSelection = false;
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+function displayResume(profile) {
+    const resumeAvailable = document.getElementById("resumeAvailable");
+    const noResume = document.getElementById("noResume");
+    const resumeFileName = document.getElementById("resumeFileName");
+    const resumeError = document.getElementById("resumeError");
+
+    resumeError.style.display = "none";
+
+    if (profile.resumeUploaded && profile.resumeFileName) {
+        resumeFileName.textContent = profile.resumeFileName;
+
+        resumeAvailable.style.display = "block";
+        noResume.style.display = "none";
+    } else {
+        resumeAvailable.style.display = "none";
+        noResume.style.display = "block";
+    }
+}
+
+async function downloadResume() {
+    const resumeError = document.getElementById("resumeError");
+
+    resumeError.style.display = "none";
+    resumeError.textContent = "";
+
+    try {
+        // Get the JWT token saved during login.
+        // Change "token" if your application uses a different key.
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Please login again to download your resume.");
+        }
+
+        const response = await fetch(
+            "http://localhost:8080/candidate/profile/resume/download",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage || "Failed to download resume.");
+        }
+
+        // Convert the response into a downloadable file.
+        const blob = await response.blob();
+
+        // Read the filename from the profile page.
+        const fileName = document.getElementById("resumeFileName").textContent
+            || "resume";
+
+        // Create a temporary URL for the file.
+        const fileURL = window.URL.createObjectURL(blob);
+
+        // Create a temporary link and trigger the download.
+        const link = document.createElement("a");
+        link.href = fileURL;
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up.
+        link.remove();
+        window.URL.revokeObjectURL(fileURL);
+
+    } catch (error) {
+        console.error("Resume download error:", error);
+
+        resumeError.textContent =
+            error.message || "Something went wrong while downloading your resume.";
+
+        resumeError.style.display = "block";
+    }
+}
+
 // Logout
 function logout() {
     localStorage.removeItem("token");
@@ -380,6 +521,11 @@ viewEditBtn.addEventListener("click", openEditMode);
 cancelBtn.addEventListener("click", cancelForm);
 profileForm.addEventListener("submit", saveProfile);
 logoutBtn.addEventListener("click", logout);
+
+document.getElementById("uploadResumeBtn").addEventListener("click", uploadResume);
+resumeFileInput.addEventListener("change", () => {
+    resumeUploadedForCurrentSelection = false;
+});
 
 // Initial load
 loadProfile();
