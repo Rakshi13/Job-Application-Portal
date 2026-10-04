@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Applicants</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .applicant-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+
+        .applicant-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .applicant-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background-color: #e8efff;
+            color: #3156a6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .skill-badge {
+            background-color: #eaf2ff;
+            color: #2455a6;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px;
+            display: inline-block;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .muted-label {
+            color: #6c757d;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="employer-dashboard.html">
+                Job App Portal
+            </a>
+            <span class="navbar-text text-white">
+                Employer
+            </span>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+
+        <a href="my-jobs.html" class="btn btn-outline-secondary btn-sm mb-3">
+            &larr; Back to My Jobs
+        </a>
+
+        <!-- Job header -->
+        <section class="page-header mb-4">
+            <div class="d-flex flex-wrap justify-content-between
+                        align-items-center gap-3">
+                <div>
+                    <h2 id="jobTitle" class="mb-2">Job Applicants</h2>
+                    <p class="text-muted mb-0">
+                        Candidates who applied for this position
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <h3 id="applicantCount" class="text-primary mb-0">0</h3>
+                    <span class="muted-label">Applicants</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div id="loadingMessage" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted mt-2">Loading applicants...</p>
+        </div>
+
+        <!-- Error -->
+        <div id="errorMessage" class="alert alert-danger" style="display: none;">
+        </div>
+
+        <!-- No applicants -->
+        <div id="emptyMessage" class="card text-center p-5" style="display: none;">
+            <h5>No applicants yet</h5>
+            <p class="text-muted mb-0">
+                Candidates who apply for this job will appear here.
+            </p>
+        </div>
+
+        <!-- Applicants list -->
+        <div id="applicantsContainer" class="row g-3"></div>
+
+    </main>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8080";
+
+        // Get jobId and optional job title from the page URL.
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get("jobId");
+        const jobTitle = urlParams.get("jobTitle");
+
+        document.getElementById("jobTitle").textContent =
+            jobTitle ? decodeURIComponent(jobTitle) : "Job Applicants";
+
+        async function loadApplicants() {
+            const loadingMessage =
+                document.getElementById("loadingMessage");
+            const errorMessage =
+                document.getElementById("errorMessage");
+            const emptyMessage =
+                document.getElementById("emptyMessage");
+
+            if (!jobId || !/^\d+$/.test(jobId)) {
+                loadingMessage.style.display = "none";
+                errorMessage.textContent =
+                    "Invalid or missing job ID.";
+                errorMessage.style.display = "block";
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                loadingMessage.style.display = "none";
+                errorMessage.textContent =
+                    "Your session has expired. Please log in again.";
+                errorMessage.style.display = "block";
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/employer/jobs/${jobId}/applicants`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error(
+                            "Session expired. Please log in again."
+                        );
+                    }
+
+                    if (response.status === 403) {
+                        throw new Error(
+                            "You are not authorized to view these applicants."
+                        );
+                    }
+
+                    if (response.status === 404) {
+                        throw new Error("Job not found.");
+                    }
+
+                    throw new Error("Failed to load applicants.");
+                }
+
+                const applicants = await response.json();
+
+                loadingMessage.style.display = "none";
+
+                document.getElementById("applicantCount")
+                    .textContent = applicants.length;
+
+                if (!Array.isArray(applicants) ||
+                    applicants.length === 0) {
+                    emptyMessage.style.display = "block";
+                    return;
+                }
+
+                displayApplicants(applicants);
+
+            } catch (error) {
+                loadingMessage.style.display = "none";
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = "block";
+                console.error("Error loading applicants:", error);
+            }
+        }
+
+        function displayApplicants(applicants) {
+            const container =
+                document.getElementById("applicantsContainer");
+
+            container.replaceChildren();
+
+            applicants.forEach(candidate => {
+                const column = document.createElement("div");
+                column.className = "col-12";
+
+                const card = document.createElement("div");
+                card.className = "card applicant-card";
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body p-4";
+
+                // Candidate heading
+                const heading = document.createElement("div");
+                heading.className =
+                    "d-flex align-items-center gap-3 mb-3";
+
+                const avatar = document.createElement("div");
+                avatar.className = "applicant-avatar";
+
+                const fullName = candidate.fullName || "Candidate";
+                avatar.textContent = fullName.trim().charAt(0).toUpperCase();
+
+                const nameSection = document.createElement("div");
+                nameSection.className = "flex-grow-1";
+
+                const name = document.createElement("h5");
+                name.className = "mb-1";
+                name.textContent = fullName;
+
+                const applicationId = document.createElement("small");
+                applicationId.className = "text-muted";
+                applicationId.textContent =
+                    `Application ID: ${candidate.applicationId ?? "N/A"}`;
+
+                nameSection.append(name, applicationId);
+                heading.append(avatar, nameSection);
+
+                // Contact information
+                const details = document.createElement("div");
+                details.className = "row g-3 mb-3";
+
+                addDetail(details, "Email", candidate.email);
+                addDetail(details, "Phone", candidate.phoneNumber);
+                addDetail(details, "Location", candidate.location);
+                addDetail(
+                    details,
+                    "Applied On",
+                    formatDate(candidate.appliedAt)
+                );
+
+                // Skills
+                const skillsSection = document.createElement("div");
+                skillsSection.className = "mb-3";
+
+                const skillsTitle = document.createElement("div");
+                skillsTitle.className = "fw-semibold mb-2";
+                skillsTitle.textContent = "Skills";
+
+                const skillsContainer = document.createElement("div");
+
+                const skills = Array.isArray(candidate.skills)
+                    ? candidate.skills
+                    : (candidate.skills || "")
+                        .split(",")
+                        .map(skill => skill.trim())
+                        .filter(Boolean);
+
+                if (skills.length === 0) {
+                    const noSkills = document.createElement("span");
+                    noSkills.className = "text-muted small";
+                    noSkills.textContent = "Not provided";
+                    skillsContainer.appendChild(noSkills);
+                } else {
+                    skills.forEach(skill => {
+                        const badge = document.createElement("span");
+                        badge.className = "skill-badge";
+                        badge.textContent = skill;
+                        skillsContainer.appendChild(badge);
+                    });
+                }
+
+                skillsSection.append(skillsTitle, skillsContainer);
+
+                // Resume filename
+                const resumeSection = document.createElement("div");
+                resumeSection.className =
+                    "d-flex flex-wrap justify-content-between " +
+                    "align-items-center gap-2 border-top pt-3";
+
+                const resumeInfo = document.createElement("div");
+
+                const resumeLabel = document.createElement("div");
+                resumeLabel.className = "muted-label";
+                resumeLabel.textContent = "Resume";
+
+                const resumeName = document.createElement("div");
+                resumeName.className = "fw-semibold";
+                resumeName.textContent =
+                    candidate.resumeFileName || "Not uploaded";
+
+                resumeInfo.append(resumeLabel, resumeName);
+                resumeSection.appendChild(resumeInfo);
+
+                cardBody.append(
+                    heading,
+                    details,
+                    skillsSection,
+                    resumeSection
+                );
+
+                card.appendChild(cardBody);
+                column.appendChild(card);
+                container.appendChild(column);
+            });
+        }
+
+        function addDetail(container, labelText, value) {
+            const column = document.createElement("div");
+            column.className = "col-sm-6 col-lg-3";
+
+            const label = document.createElement("div");
+            label.className = "muted-label";
+            label.textContent = labelText;
+
+            const text = document.createElement("div");
+            text.className = "fw-medium text-break";
+            text.textContent = value || "Not provided";
+
+            column.append(label, text);
+            container.appendChild(column);
+        }
+
+        function formatDate(dateValue) {
+            if (!dateValue) {
+                return "Not available";
+            }
+
+            const date = new Date(dateValue);
+
+            if (Number.isNaN(date.getTime())) {
+                return dateValue;
+            }
+
+            return date.toLocaleString();
+        }
+
+        document.addEventListener("DOMContentLoaded", loadApplicants);
+    </script>
+
+</body>
+
+</html>

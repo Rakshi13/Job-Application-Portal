@@ -1,75 +1,62 @@
-// on load of the page
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Get JWT token
     const token = localStorage.getItem("token");
+
     // Redirect if user is not logged in
     if (!token) {
         window.location.href = "../login.html";
         return;
     }
 
-    // Show logged-in username
-    // const username = localStorage.getItem("username");
+    // Get HTML elements
+    const createCompanySection =
+        document.getElementById("createCompanySection");
 
-    // document.getElementById("welcomeUser").textContent =
-    //     "Welcome, " + username;
+    const employerActionsSection =
+        document.getElementById("employerActionsSection");
 
+    const logoutBtn =
+        document.getElementById("logoutBtn");
 
-    // Temporary Dashboard Statistics
-    document.getElementById("totalJobs").textContent = "0";
-    document.getElementById("totalApplications").textContent = "0";
-    document.getElementById("activeJobs").textContent = "0";
+    // Check required HTML elements
+    if (!createCompanySection || !employerActionsSection || !logoutBtn) {
+        console.error("One or more dashboard HTML elements are missing.");
+        return;
+    }
 
-    // Call GET /employer/dashboard
+    // Load employer dashboard
     loadEmployerDashboard();
 
-
     async function loadEmployerDashboard() {
-
         try {
-
             const response = await fetch(
                 "http://localhost:8080/employer/dashboard",
                 {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + token,
-                        "Content-Type": "application/json"
+                        "Accept": "application/json"
                     }
                 }
             );
 
-
-            // JWT invalid / expired
+            // JWT invalid or expired
             if (response.status === 401) {
-
-                localStorage.removeItem("token");
-                localStorage.removeItem("username");
-                localStorage.removeItem("role");
-
-                window.location.href = "../login.html";
-
+                logout();
                 return;
             }
-
 
             // User doesn't have permission
             if (response.status === 403) {
-
                 alert("You don't have permission to access this page.");
-
                 return;
             }
 
-
             if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load employer dashboard"
-                );
+                throw new Error("Failed to load employer dashboard");
             }
-
 
             const data = await response.json();
 
@@ -77,16 +64,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             displayDashboard(data);
 
-
         } catch (error) {
-
-            console.error(
-                "Error loading employer dashboard:",
-                error
-            );
+            console.error("Error loading employer dashboard:", error);
+            alert("Unable to load the employer dashboard. Please try again.");
         }
     }
-
 
     function displayDashboard(data) {
 
@@ -94,47 +76,41 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Has company:", data.hasCompany);
         console.log("Company:", data.company);
 
-        const createCompanySection = document.getElementById("createCompanySection");
+        if (typeof data.hasCompany !== "boolean") {
+            console.error("Invalid hasCompany value");
+            return;
+        }
 
-        const employerActionsSection = document.getElementById("employerActionsSection");
+        const createCompanySection =
+            document.getElementById("createCompanySection");
 
-        const viewSection = document.getElementById("viewSection");
-
+        const employerActionsSection =
+            document.getElementById("employerActionsSection");
 
         if (data.hasCompany === false) {
 
-            // Employer doesn't have a company
+            // Employer hasn't created a company
             createCompanySection.style.display = "block";
             employerActionsSection.style.display = "none";
-            viewSection.style.display = "none";
 
         } else {
 
-            // Employer already has a company
+            // Employer has created a company
             createCompanySection.style.display = "none";
             employerActionsSection.style.display = "flex";
-            viewSection.style.display = "flex";
         }
     }
 
+    // Logout function
+    function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("role");
 
-    // Logout
-    document.getElementById("logoutBtn")
-        .addEventListener("click", function () {
+        window.location.href = "../login.html";
+    }
 
-            localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            localStorage.removeItem("role");
-
-            window.location.href = "../login.html";
-        });
-
-
-    const createCompanyBtn = document.getElementById("createCompanyBtn");
-
-    createCompanyBtn.addEventListener("click", function () {
-        window.location.href = "../create-company.html";
-
-    });
+    // Logout button
+    logoutBtn.addEventListener("click", logout);
 
 });
