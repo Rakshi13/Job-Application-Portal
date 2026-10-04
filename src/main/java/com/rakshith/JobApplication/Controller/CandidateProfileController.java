@@ -4,16 +4,15 @@ import com.rakshith.JobApplication.DTO.CandidateProfileRequestDto;
 import com.rakshith.JobApplication.DTO.CandidateProfileResponseDto;
 import com.rakshith.JobApplication.Service.CandidateProfileService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.core.io.Resource;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
+
 
 @RestController
 public class CandidateProfileController {
@@ -82,4 +81,29 @@ public class CandidateProfileController {
                 .body(message);
     }
 
+    @GetMapping("/candidate/profile/resume/download")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public ResponseEntity<Resource> downloadResume() throws IOException {
+
+        CandidateProfileService.ResumeDownload resume =
+                candidateProfileService.downloadResume();
+
+        MediaType contentType = MediaType.APPLICATION_OCTET_STREAM;
+
+        if (resume.contentType() != null
+                && !resume.contentType().isBlank()) {
+            contentType = MediaType.parseMediaType(resume.contentType());
+        }
+
+        return ResponseEntity.ok()
+                .contentType(contentType)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment()
+                                .filename(resume.fileName())
+                                .build()
+                                .toString()
+                )
+                .body(resume.resource());
+    }
 }

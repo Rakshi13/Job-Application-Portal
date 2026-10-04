@@ -18,5 +18,8 @@ public class CandidateProfileResponseDto {
     private String currentDesignation;
     private String email;
     private String professionalSummary;
-
+    private String resumeFileName;
+    private Long resumeFileSize;
+    private String resumeContentType;
+    private boolean resumeUploaded;
 }
