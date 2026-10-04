@@ -1,7 +1,7 @@
 package com.rakshith.JobApplication.Controller;
 
-import com.rakshith.JobApplication.DTO.EmployerDashboardResponse;
 import com.rakshith.JobApplication.DTO.EmployerRegisterRequest;
+import com.rakshith.JobApplication.DTO.JobApplicantResponseDto;
 import com.rakshith.JobApplication.Service.EmployerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,5 +36,16 @@ public class EmployerController {
         response.put("message","Employer Registered Successfully.");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+    }
+
+    @GetMapping("/jobs/{jobId}/applicants")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<List<JobApplicantResponseDto>> getJobApplicants(
+            @PathVariable Long jobId) {
+
+        List<JobApplicantResponseDto> applicants =
+                employerService.getJobApplicants(jobId);
+
+        return ResponseEntity.ok(applicants);
     }
 }

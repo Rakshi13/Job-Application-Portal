@@ -125,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 jobs
             );
 
-
             displayJobs(jobs);
 
 
@@ -190,47 +189,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
             row.innerHTML = `
 
+                <td>${job.id}</td>
+
                 <td>
-                    ${job.id}
+                    <strong>${job.title}</strong>
                 </td>
 
-                <td>
-                    <strong>
-                        ${job.title}
-                    </strong>
-                </td>
+                <td>${job.location}</td>
+
+                <td>₹${job.minSalary}</td>
+
+                <td>₹${job.maxSalary}</td>
 
                 <td>
-                    ${job.location}
-                </td>
-
-                <td>
-                    ₹${job.minSalary}
-                </td>
-
-                <td>
-                    ₹${job.maxSalary}
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn btn-primary btn-sm me-2 edit-btn"
-                        data-id="${job.id}">
-
+                <button
+                    class="btn btn-primary btn-sm me-2 edit-btn"
+                    data-id="${job.id}">
                         Edit
+                </button>
 
-                    </button>
-
-
-                    <button
-                        class="btn btn-danger btn-sm delete-btn"
-                        data-id="${job.id}">
-
+                <button
+                    class="btn btn-danger btn-sm me-2 delete-btn"
+                    data-id="${job.id}">
                         Delete
+                </button>
 
-                    </button>
-
+                <button
+                    class="btn btn-success btn-sm view-applicants-btn"
+                    data-id="${job.id}">
+                        View Applicants
+                </button>
                 </td>
 
             `;
@@ -257,46 +245,44 @@ document.addEventListener("DOMContentLoaded", function () {
             // Edit
             // ====================================
 
-            if (
-                event.target.classList.contains(
-                    "edit-btn"
-                )
-            ) {
-
-                const jobId =
-                    event.target.getAttribute(
-                        "data-id"
-                    );
-
+            if (event.target.classList.contains("edit-btn")) {
+                const jobId = event.target.getAttribute("data-id");
 
                 editJob(jobId);
 
                 return;
             }
 
-
-
             // ====================================
             // Delete
             // ====================================
 
-            if (
-                event.target.classList.contains(
-                    "delete-btn"
-                )
-            ) {
+            if (event.target.classList.contains("delete-btn")) {
 
-                const jobId =
-                    event.target.getAttribute(
-                        "data-id"
-                    );
+                const jobId = event.target.getAttribute("data-id");
 
+                deleteJob(jobId, event.target);
 
-                deleteJob(
-                    jobId,
-                    event.target
-                );
+            }
 
+            // ====================================
+            // VIEW APPLICANT
+            // ====================================
+
+            // View Applicants
+            if (event.target.classList.contains("view-applicants-btn")) {
+
+                const jobId = event.target.getAttribute("data-id");
+
+                const jobTitle = event.target
+                    .closest("tr")
+                    .children[1]
+                    .textContent
+                    .trim();
+
+                viewApplicants(jobId, jobTitle);
+
+                return;
             }
 
         }
@@ -582,6 +568,17 @@ document.addEventListener("DOMContentLoaded", function () {
             "d-none"
         );
 
+    }
+
+    function viewApplicants(jobId, jobTitle) {
+
+        const params = new URLSearchParams({
+            jobId: jobId,
+            jobTitle: jobTitle
+        });
+
+        window.location.href =
+            `view-applicants.html?${params.toString()}`;
     }
 
 });
