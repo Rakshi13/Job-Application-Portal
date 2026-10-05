@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Uploaded files
+uploads/
+
+# Environment / secrets
+.env
+
+# macOS
+.DS_Store
+
+#new file
+application-local.properties
