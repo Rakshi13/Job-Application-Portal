@@ -1,62 +1,125 @@
+
 console.log("Employer JS Loaded");
-document.getElementById("register-employer").addEventListener("click", async function (e) {
-    console.log("Register Button Clicked");
+
+const employerForm = document.getElementById("employerForm");
+
+employerForm.addEventListener("submit", async function (e) {
+
     e.preventDefault();
+
+    console.log("Register Form Submitted");
+
     clearErrors();
+
+    const username =
+        document.getElementById("employer-username").value;
+
+    const password =
+        document.getElementById("employer-password").value;
+
+    const confirmPassword =
+        document.getElementById("employer-confirm-password").value;
+
+    // Step 1: Validate Confirm Password
+    if (password !== confirmPassword) {
+
+        document.getElementById("confirm-password-error")
+            .textContent = "Passwords do not match.";
+
+        return;
+    }
+
+    // Step 2: Prepare request
     const request = {
-        username: document.getElementById("employer-username").value,
-        password: document.getElementById("employer-password").value
+        username: username,
+        password: password
     };
 
-    console.log(request);
-
-    const response = await fetch("http://localhost:8080/employer/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(request)
+    console.log("Registration request:", {
+        username: username
     });
 
-    const data = await response.json();
+    try {
 
-    console.log(data);
-    if (response.ok) {
-        alert(data.message);
+        // Step 3: Call registration API
+        const response = await fetch(
+            "http://localhost:8080/employer/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(request)
+            }
+        );
 
-        setTimeout(() => {
+        const data = await response.json();
+
+        console.log("Registration response:", data);
+
+        // Step 4: Handle successful registration
+        if (response.ok) {
+
+            alert(data.message);
+
             window.location.href = "login.html";
-        }, 1000);
 
-    } else {
-        const fieldMap = {
-            username: "username-error",
-            password: "password-error"
-        };
+        } else {
 
-        for (const key in data) {
-            const elementId = fieldMap[key];
+            // Step 5: Display backend validation errors
+            const fieldMap = {
+                username: "username-error",
+                password: "password-error"
+            };
 
-            if (elementId) {
-                document.getElementById(elementId).textContent = data[key];
+            for (const key in data) {
+
+                const elementId = fieldMap[key];
+
+                if (elementId) {
+                    document.getElementById(elementId)
+                        .textContent = data[key];
+                }
             }
         }
-        return;
+
+    } catch (error) {
+
+        console.error("Registration error:", error);
+
+        alert("Unable to register. Please try again.");
     }
 });
 
 
+// Clear all validation errors
 function clearErrors() {
-    document.getElementById("password-error").textContent = "";
+
     document.getElementById("username-error").textContent = "";
+    document.getElementById("password-error").textContent = "";
+    document.getElementById("confirm-password-error").textContent = "";
 }
 
+
+// Clear username error when typing
 document.getElementById("employer-username")
     .addEventListener("input", function () {
+
         document.getElementById("username-error").textContent = "";
     });
 
+
+// Clear password error when typing
 document.getElementById("employer-password")
     .addEventListener("input", function () {
+
         document.getElementById("password-error").textContent = "";
+    });
+
+
+// Clear confirm password error when typing
+document.getElementById("employer-confirm-password")
+    .addEventListener("input", function () {
+
+        document.getElementById("confirm-password-error").textContent = "";
     });
