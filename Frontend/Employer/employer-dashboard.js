@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadEmployerDashboard() {
         try {
             const response = await fetch(
-                "http://localhost:8080/employer/dashboard",
+                "https://job-application-portal-ke3u.onrender.com/employer/dashboard",
                 {
                     method: "GET",
                     headers: {

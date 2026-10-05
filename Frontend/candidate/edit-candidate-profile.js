@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/candidate/profile";
+const API_URL = "https://job-application-portal-ke3u.onrender.com/candidate/profile";
 
 const loadingBox = document.getElementById("loadingBox");
 const formContainer = document.getElementById("formContainer");

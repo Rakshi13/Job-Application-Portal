@@ -20,7 +20,7 @@ async function loadJobs() {
     }
 
     try {
-        const response = await fetch("http://localhost:8080/AllJobs", {
+        const response = await fetch("https://job-application-portal-ke3u.onrender.com/AllJobs", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`

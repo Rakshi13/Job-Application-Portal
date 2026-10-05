@@ -38,7 +38,7 @@ async function loadJobDetails(jobId) {
     try {
 
         const response = await fetch(
-            `http://localhost:8080/jobs/${jobId}`,
+            `https://job-application-portal-ke3u.onrender.com/jobs/${jobId}`,
             {
                 method: "GET",
                 headers: {
@@ -187,7 +187,7 @@ async function applyForJob(jobId) {
     try {
 
         const response = await fetch(
-            `http://localhost:8080/jobs/${jobId}/apply`,
+            `https://job-application-portal-ke3u.onrender.com/jobs/${jobId}/apply`,
             {
                 method: "POST",
                 headers: {
@@ -238,7 +238,7 @@ async function saveJob(jobId) {
 
     try {
         const response = await fetch(
-            `http://localhost:8080/jobs/${jobId}/save`,
+            `https://job-application-portal-ke3u.onrender.com/jobs/${jobId}/save`,
             {
                 method: "POST",
                 headers: {

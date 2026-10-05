@@ -56,7 +56,7 @@ candidateForm.addEventListener("submit", async function (e) {
         // ============================================
 
         const response = await fetch(
-            "http://localhost:8080/candidate/register",
+            "https://job-application-portal-ke3u.onrender.com/candidate/register",
             {
                 method: "POST",
 

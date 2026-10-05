@@ -58,7 +58,7 @@ companyForm.addEventListener("submit", async function (event) {
 
 
         const response = await fetch(
-            "http://localhost:8080/companies",
+            "https://job-application-portal-ke3u.onrender.com/companies",
             {
                 method: "POST",
 

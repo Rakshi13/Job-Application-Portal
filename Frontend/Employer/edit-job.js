@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
 
             const response = await fetch(
-                `http://localhost:8080/jobs/${jobId}`,
+                `https://job-application-portal-ke3u.onrender.com/jobs/${jobId}`,
                 {
                     method: "GET",
 
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
 
                 const response = await fetch(
-                    `http://localhost:8080/jobs/${jobId}`,
+                    `https://job-application-portal-ke3u.onrender.com/jobs/${jobId}`,
                     {
                         method: "PUT",
 

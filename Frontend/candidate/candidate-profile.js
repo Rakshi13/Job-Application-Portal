@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/candidate/profile";
+const API_URL = "https://job-application-portal-ke3u.onrender.com/candidate/profile";
 
 let currentMode = "loading";
 let savedProfile = null;
@@ -401,7 +401,7 @@ async function uploadResume() {
 
     try {
         const response = await fetch(
-            "http://localhost:8080/candidate/profile/resume",
+            "https://job-application-portal-ke3u.onrender.com/candidate/profile/resume",
             {
                 method: "POST",
                 headers: {
@@ -463,7 +463,7 @@ async function downloadResume() {
         }
 
         const response = await fetch(
-            "http://localhost:8080/candidate/profile/resume/download",
+            "https://job-application-portal-ke3u.onrender.com/candidate/profile/resume/download",
             {
                 method: "GET",
                 headers: {
