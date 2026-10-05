@@ -43,7 +43,7 @@ employerForm.addEventListener("submit", async function (e) {
 
         // Step 3: Call registration API
         const response = await fetch(
-            "http://localhost:8080/employer/register",
+            "https://job-application-portal-ke3u.onrender.com/employer/register",
             {
                 method: "POST",
                 headers: {

@@ -1,4 +1,4 @@
-const RESUME_API = "http://localhost:8080/candidate/profile/resume";
+const RESUME_API = "https://job-application-portal-ke3u.onrender.com/candidate/profile/resume";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 const resumeStatus = document.getElementById("resumeStatus");

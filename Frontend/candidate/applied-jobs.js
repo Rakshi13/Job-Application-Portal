@@ -24,7 +24,7 @@ async function loadAppliedJobs() {
     try {
 
         const response = await fetch(
-            "http://localhost:8080/candidate/applied-jobs",
+            "https://job-application-portal-ke3u.onrender.com/candidate/applied-jobs",
             {
                 method: "GET",
 

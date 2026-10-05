@@ -14,7 +14,7 @@ document.getElementById('login-user').addEventListener("click", async function (
 
     console.log(request);
 
-    const loginResponse = await fetch("http://localhost:8080/login", {
+    const loginResponse = await fetch("https://job-application-portal-ke3u.onrender.com/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
