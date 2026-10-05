@@ -1,7 +1,5 @@
 package com.rakshith.JobApplication.Service;
 
-import com.rakshith.JobApplication.DTO.CompanyResponse;
-import com.rakshith.JobApplication.DTO.EmployerDashboardResponse;
 import com.rakshith.JobApplication.DTO.EmployerRegisterRequest;
 import com.rakshith.JobApplication.DTO.JobApplicantResponseDto;
 import com.rakshith.JobApplication.Entity.*;

@@ -7,14 +7,12 @@ import com.rakshith.JobApplication.DTO.RegisterResponse;
 import com.rakshith.JobApplication.Entity.User;
 import com.rakshith.JobApplication.Repository.UserRepository;
 import com.rakshith.JobApplication.exception.InvalidCredentialsException;
-import com.rakshith.JobApplication.exception.ResourceNotFoundException;
 import com.rakshith.JobApplication.exception.UserAlreadyExistsException;
 import com.rakshith.JobApplication.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
