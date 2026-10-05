@@ -1,0 +1,7 @@
+.git
+.idea
+target
+uploads
+Frontend
+*.iml
+application-local.properties

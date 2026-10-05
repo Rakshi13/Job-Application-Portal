@@ -60,7 +60,9 @@ public class SecurityConfig {
                                 "/username",
                                 "/h2-console/**",
                                 "/candidate/register",
-                                "/employer/register"
+                                "/employer/register",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         ).permitAll()
 
                         // Admin APIs
