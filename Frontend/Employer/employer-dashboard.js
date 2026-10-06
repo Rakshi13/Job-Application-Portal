@@ -60,8 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await response.json();
 
-            console.log("Dashboard response:", data);
-
             displayDashboard(data);
 
         } catch (error) {
@@ -71,10 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function displayDashboard(data) {
-
-        console.log("Username:", data.username);
-        console.log("Has company:", data.hasCompany);
-        console.log("Company:", data.company);
 
         if (typeof data.hasCompany !== "boolean") {
             console.error("Invalid hasCompany value");

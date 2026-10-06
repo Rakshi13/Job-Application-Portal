@@ -120,11 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const jobs =
                 await response.json();
 
-            console.log(
-                "Jobs:",
-                jobs
-            );
-
             displayJobs(jobs);
 
 
@@ -295,13 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // ============================================
 
     function editJob(jobId) {
-
-        console.log(
-            "Edit Job:",
-            jobId
-        );
-
-
         window.location.href =
             `edit-job.html?id=${jobId}`;
 
@@ -450,11 +438,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // ====================================
             // SUCCESS
             // ====================================
-
-            console.log(
-                "Job deleted:",
-                jobId
-            );
 
 
             // Remove ONLY this row

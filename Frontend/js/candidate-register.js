@@ -1,4 +1,3 @@
-console.log("Candidate JS Loaded");
 
 const candidateForm =
     document.getElementById("candidateForm");
@@ -70,8 +69,6 @@ candidateForm.addEventListener("submit", async function (e) {
 
 
         const data = await response.json();
-
-        console.log("Registration response:", data);
 
 
         // ============================================
