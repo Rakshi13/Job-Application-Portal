@@ -47,10 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    console.log("Editing Job ID:", jobId);
-
-
-
     // ============================================
     // DOM Elements
     // ============================================
@@ -185,11 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const job =
                 await response.json();
-
-            console.log(
-                "Job Details:",
-                job
-            );
 
 
 
@@ -354,15 +345,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 location: location
 
             };
-
-
-
-            console.log(
-                "Updating Job:",
-                jobData
-            );
-
-
 
             // ====================================
             // Disable Button

@@ -1,8 +1,6 @@
-console.log("Login loaded");
 
 document.getElementById('login-user').addEventListener("click", async function (e) {
 
-    console.log("User logged in successfully.");
     e.preventDefault();
 
     clearLoginData();
@@ -11,8 +9,6 @@ document.getElementById('login-user').addEventListener("click", async function (
         username: document.getElementById('login-username').value,
         password: document.getElementById('login-password').value
     };
-
-    console.log(request);
 
     const loginResponse = await fetch("https://job-application-portal-ke3u.onrender.com/login", {
         method: "POST",

@@ -1,13 +1,10 @@
 
-console.log("Employer JS Loaded");
 
 const employerForm = document.getElementById("employerForm");
 
 employerForm.addEventListener("submit", async function (e) {
 
     e.preventDefault();
-
-    console.log("Register Form Submitted");
 
     clearErrors();
 
@@ -54,8 +51,6 @@ employerForm.addEventListener("submit", async function (e) {
         );
 
         const data = await response.json();
-
-        console.log("Registration response:", data);
 
         // Step 4: Handle successful registration
         if (response.ok) {

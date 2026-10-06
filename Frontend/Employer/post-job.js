@@ -77,9 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
 
-        console.log("POST Job Request:", jobData);
-
-
         try {
 
             // Disable button while API is running
@@ -172,12 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Success
             const data = await response.json();
-
-
-            console.log(
-                "Job created successfully:",
-                data
-            );
 
 
             alert("Job posted successfully!");
